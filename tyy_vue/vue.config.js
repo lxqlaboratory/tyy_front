@@ -24,8 +24,8 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
-  outputDir: 'D:/apache-tomcat-8.5.54/webapps/ROOT/',
+  publicPath: '/vue',
+  outputDir: 'D:/apache-tomcat-8.5.54/webapps/ROOT/vue',
   assetsDir: 'static',
   lintOnSave: false,
   productionSourceMap: false,
