@@ -1,0 +1,769 @@
+{
+ 	"pages": [
+        {
+        	"path": "pages/login/loginIndex",
+        	"style": {
+        		"navigationBarTitleText": "天一同业旅游平台",
+        		"navigationBarBackgroundColor": "#7acfa6",
+        		"backgroundColor": "#7acfa6"
+        	}
+        },
+ 		{
+ 			"path": "pages/index/index",
+ 			"style": {
+ 				// #ifdef MP 
+ 				"navigationBarTitleText": "天一同业旅游平台",
+ 				//"navigationStyle": "custom",
+ 				// #endif 
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent",
+ 						"searchInput": {
+ 							"backgroundColor": "rgba(231, 231, 231,.7)",
+ 							"borderRadius": "16px",
+ 							"placeholder": "",
+ 							"disabled": true,
+ 							"placeholderColor": "#606266"
+ 						},
+ 						"buttons": [{
+ 								"fontSrc": "/static/yticon.ttf",
+ 								"text": "\ue60d",
+ 								"fontSize": "26",
+ 								"color": "#303133",
+ 								"float": "left",
+ 								"background": "rgba(0,0,0,0)"
+ 							},
+ 							{
+ 								"fontSrc": "/static/yticon.ttf",
+ 								"text": "\ue744",
+ 								"fontSize": "27",
+ 								"color": "#303133",
+ 								"background": "rgba(0,0,0,0)",
+ 								"redDot": true
+ 							}
+ 						]
+ 					}
+ 				}
+ 			}
+ 		},
+
+ 		{
+ 			"path": "pages/index/indexEntry",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tour/tourProConfirm",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},
+		{
+			"path": "pages/distributer/disAccount",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/user/paytest",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/planPintuan",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/product/editHaibao",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/groupDetailDate",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/tour/orderDetail",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/tour/viewOrder1",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},		
+		{
+			"path": "pages/product/poster",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},	
+		{
+			"path": "pages/product/createHaibao",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+				{
+			"path": "pages/tour/otherOrderDetail",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/sanpintuan",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/product/shenhechanpin",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/product/cuxiaochanpin",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},		
+		{
+			"path": "pages/tourist/addMoreTour",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/product/editPlan",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},	
+		{
+			"path": "pages/product/cuxiaochanpinDetail",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},				
+		
+ 		{
+ 			"path": "pages/user/baseInfo",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+		
+ 		},
+		{
+			"path": "pages/group/manageGroup",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/ordermanage",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/guider/shijianzhou",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/tour/contect",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/groupDetail",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/groupPintuan",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/tour/tourFinishOrder",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/group/addgroup",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+		{
+			"path": "pages/distributer/eidetPercentage",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+				{
+			"path": "pages/tour/continuePay",
+			"style": {
+				"navigationBarTitleText": "继续支付"
+		
+			}
+		},
+		
+ 		{
+ 			"path": "pages/tour/tourSelectSeat",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},
+		{
+			"path": "pages/distributer/fencheng",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+ 		{
+ 			"path": "pages/product/productBuyFist",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/select",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},		
+		{
+			"path": "pages/product/shenhechanpindetail",
+			"style": {
+				"navigationBarTitleText": "天一同业旅游平台"
+		
+			}
+		},
+ 		{
+ 			"path": "pages/tour/disConfirmOrder",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/realProduct",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tour/tourSign",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/pay",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/paySuccess",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/productDetail",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tour/tourProduct",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/index",
+ 			"style": {
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/historyPunch",
+ 			"style": {
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/punchMap",
+ 			"style": {
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tourist/tourSelectSeat",
+ 			"style": {
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/index/myindex",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+		{
+			"path": "pages/index/buyIndex",
+			"style": {
+				"navigationBarTitleText": "同业游平台",
+				"navigationBarBackgroundColor": "#7acfa6",
+				"backgroundColor": "#7acfa6"
+			}
+		},
+ 		{
+ 			"path": "pages/guider/modifyGuiderPass",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tour/tourViewProduct",
+ 			"style": {
+ 				"navigationBarTitleText": ""
+ 			}
+ 		},		
+		
+ 		{
+ 			"path": "pages/tour/viewOrder",
+ 			"style": {
+ 				"navigationBarTitleText": "查看订单"
+ 			}
+ 		},	
+ 		{
+ 			"path": "pages/tourist/addTouristInOrder",
+ 			"style": {
+ 				"navigationBarTitleText": "添加游客"
+ 			}
+ 		},				
+		
+		{
+			"path": "pages/group/searchGroup",
+			"style": {
+				"navigationBarTitleText": "同业游平台"
+			}
+		},
+ 		{
+ 			"path": "pages/guider/addJournal",
+ 			"style": {
+ 				"navigationBarTitleText": "添加日志"
+ 			}
+ 		},
+		    {
+      "path": "pages/tour/viewProduct",
+      "style": {
+        "navigationBarTitleText": "查看产品"
+      }
+    },
+    {
+      "path": "pages/tour/selectDis",
+      "style": {
+        "navigationBarTitleText": "选择分销商"
+      }
+    },  
+	    {
+	  "path": "pages/tour/viewTour",
+	  "style": {
+	    "navigationBarTitleText": "查看游客信息"
+	  }
+	},  
+
+    {
+      "path": "pages/tour/selectAstaff",
+      "style": {
+        "navigationBarTitleText": "选择员工"
+      }
+    },              
+    {
+      "path": "pages/tour/addOrder",
+      "style": {
+        "navigationBarTitleText": "订单详情"
+      }
+    },
+ 		{
+ 			"path": "pages/guider/viewJournal",
+ 			"style": {
+ 				"navigationBarTitleText": "查看日志"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/viewAccount",
+ 			"style": {
+ 				"navigationBarTitleText": "报账详情"
+ 			}
+ 		},		
+ 		{
+ 			"path": "pages/guider/viewGroup",
+ 			"style": {
+ 				"navigationBarTitleText": "选择团队"
+ 			}
+ 		},
+	 		{
+		"path": "pages/guider/viewGroupForAccount",
+		"style": {
+			"navigationBarTitleText": "选择团队"
+		}
+	},	
+	 		{
+		"path": "pages/distributer/viewGroup",
+		"style": {
+			"navigationBarTitleText": "选择团队"
+		}
+	},
+	 		{
+		"path": "pages/distributer/viewGroup1",
+		"style": {
+			"navigationBarTitleText": "选择团队"
+		}
+	},				
+	 		{
+		"path": "pages/distributer/viewJournal",
+		"style": {
+			"navigationBarTitleText": "查看日志"
+		}
+	},
+	 		{
+		"path": "pages/distributer/tuoke",
+		"style": {
+	
+		}
+	},	
+	 		{
+		"path": "pages/distributer/tuokeDetail",
+		"style": {
+
+		}
+	},						
+ 		{
+ 			"path": "pages/guider/viewOrderDetile",
+ 			"style": {
+ 				"navigationBarTitleText": "集合地点详情"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/viewOrder",
+ 			"style": {
+ 				"navigationBarTitleText": "选择集合地点"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/addOpinion",
+ 			"style": {
+ 				"navigationBarTitleText": "上传意见表"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/viewGroupForOpinion",
+ 			"style": {
+ 				"navigationBarTitleText": "选择团队"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/distributer/addStaff",
+ 			"style": {
+ 				"navigationBarTitleText": "添加业务员"
+ 			}
+ 		},		
+		 		{
+			"path": "pages/guider/viewGroupForAddJournal",
+			"style": {
+				"navigationBarTitleText": "选择团队"
+			}
+		},		
+		{
+			"path": "pages/guider/viewGroupForViewJournal",
+			"style": {
+				"navigationBarTitleText": "选择团队"
+			}
+		},	
+ 		{
+ 			"path": "pages/guider/viewLocation",
+ 			"style": {
+ 				"navigationBarTitleText": "查看集合地点"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tourist/viewLocation",
+ 			"style": {
+ 				"navigationBarTitleText": "查看集合地点"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tourist/addTourist",
+ 			"style": {
+ 				"navigationBarTitleText": "添加游客信息"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/tourist/manageTourist",
+ 			"style": {
+ 				"navigationBarTitleText": "管理游客信息"
+ 			}
+ 		},				
+ 		{
+ 			"path": "pages/tourist/modifyTourist",
+ 			"style": {
+ 				"navigationBarTitleText": "修改游客信息"
+ 			}
+ 		},		
+ 		{
+ 			"path": "pages/guider/recordLocation",
+ 			"style": {
+ 				"navigationBarTitleText": "记录位置"
+ 			}
+ 		},		
+ 		{
+ 			"path": "pages/login/login",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/guider/guiderPunch",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/productHistory",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/addProduct",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/personalProduct",
+ 			"style": {
+ 				"navigationBarTitleText": "同业游平台",
+ 				"navigationBarBackgroundColor": "#7acfa6",
+ 				"backgroundColor": "#7acfa6"
+ 			}
+ 		},
+		{
+			"path": "pages/product/allPlan",
+			"style": {
+				"navigationBarTitleText": "同业游平台",
+				"navigationBarBackgroundColor": "#7acfa6",
+				"backgroundColor": "#7acfa6"
+			}
+		},
+		{
+			"path": "pages/product/productPlan",
+			"style": {
+				"navigationBarTitleText": "同业游平台",
+				"navigationBarBackgroundColor": "#7acfa6",
+				"backgroundColor": "#7acfa6"
+			}
+		},
+		{
+			"path": "pages/product/addPlan",
+			"style": {
+				"navigationBarTitleText": "同业游平台",
+				"navigationBarBackgroundColor": "#7acfa6",
+				"backgroundColor": "#7acfa6"
+			}
+		},
+ 		{
+ 			"path": "pages/user/user",
+ 			"style": {
+ 				"navigationBarTitleText": "我的",
+ 				// #ifdef MP
+ 				"navigationStyle": "custom",
+ 				// #endif
+ 				"app-plus": {
+ 					"bounce": "none",
+ 					"titleNView": {
+ 						"type": "transparent",
+ 						"buttons": [{
+ 								"fontSrc": "/static/yticon.ttf",
+ 								"text": "\ue60f",
+ 								"fontSize": "24",
+ 								"color": "#303133",
+ 								"width": "46px",
+ 								"background": "rgba(0,0,0,0)"
+ 							},
+ 							{
+ 								"fontSrc": "/static/yticon.ttf",
+ 								"text": "\ue744",
+ 								"fontSize": "28",
+ 								"color": "#303133",
+ 								"background": "rgba(0,0,0,0)",
+ 								"redDot": true
+ 							}
+ 						]
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/indexcom/menu",
+ 			"style": {
+ 				"navigationBarTitleText": "天一同业旅游平台"
+ 			}
+ 		}, {
+ 			"path": "pages/imageTest/imageTest",
+ 			"style": {}
+ 		},
+ 		{
+ 			"path": "pages/product/product",
+ 			"style": {
+ 				"navigationBarTitleText": "详情展示",
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/product/tourDetail",
+ 			"style": {
+ 				"navigationBarTitleText": "详情展示",
+ 				"app-plus": {
+ 					"titleNView": {
+ 						"type": "transparent"
+ 					}
+ 				}
+ 			}
+ 		},
+ 		{
+ 			"path": "pages/userinfo/userinfo",
+ 			"style": {}
+ 		},
+ 		{
+ 			"path": "pages/seat/seat",
+ 			"style": {}
+ 		}
+ 	],
+ 	"globalStyle": {
+ 		"navigationBarTextStyle": "black",
+ 		"navigationBarTitleText": "uni-app",
+ 		"navigationBarBackgroundColor": "#FFFFFF",
+ 		"backgroundColor": "#f8f8f8"
+ 	},
+ 	"tabBar": {
+ 		"color": "#C0C4CC",
+ 		"selectedColor": "#fa436a",
+ 		"borderStyle": "black",
+ 		"backgroundColor": "#ffffff",
+ 		"list": [{
+ 				"pagePath": "pages/index/index",
+ 				"iconPath": "static/tab-home.png",
+ 				"selectedIconPath": "static/tab-home-current.png",
+ 				"text": "首页"
+ 			},
+ 			// {
+
+ 			// 	"pagePath": "pages/guider/guiderPunch",
+ 			// 	"iconPath": "static/tab-cate.png",
+ 			// 	"selectedIconPath": "static/tab-cate-current.png",
+ 			// 	"text": "通知"
+ 			// },
+ 			{
+
+ 				"pagePath": "pages/indexcom/menu",
+ 				"iconPath": "static/tab-cate.png",
+ 				"selectedIconPath": "static/tab-cate-current.png",
+ 				"text": "功能"
+ 			},
+
+ 			{
+ 				"pagePath": "pages/user/baseInfo",
+ 				"iconPath": "static/tab-my.png",
+ 				"selectedIconPath": "static/tab-my-current.png",
+ 				"text": "我的"
+ 			}
+ 		]
+ 	}
+ }

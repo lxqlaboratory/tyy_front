@@ -1,0 +1,78 @@
+/* CSS Document */
+.line_lm{ margin:10px; padding:10px  20px  10px  20px;}
+.line_bt{ font-size:12px; color:#333333; font-weight:bold;}
+.xmbg{padding:4px  2px  4px  2px;font-size:15px;	background-color:#E1E1E1;	border: 1px outset #DDEEFF; color:#333333;}
+.line_box1 {
+	margin:10px;
+	padding:20px  20px  20px  30px;
+	
+}
+.line_box2 {margin:10px;padding:10px  20px  10px  30px;;	}
+.line_box2-1{ margin-bottom:5px;}
+.line_box3 { margin:10px; padding:10px;padding:10px  20px  10px  30px; ;	}
+.line_box4 { margin:10px; padding:10px;padding:10px  20px  10px  30px;;	}
+.line_box5 { margin:10px; padding:10px;padding:10px  20px  10px  30px;}
+.line_box6 { margin:10px; padding:10px;padding:10px  20px  10px  30px; }
+
+.line_step1{ margin-bottom:3px; padding:5px 0px 5px 0px;}
+.lnotes{ margin-top:10px;}
+.lremark{ margin-top:10px;}
+.sys_company{ margin-top:10px;}
+
+.line_price1 { width:95%; padding:5px 10px 5px 10px; margin:10px; list-style-type:none;}
+img{ margin:0px; padding:0px; border:0px;}
+.line_price1-1{
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: double;
+	border-left-style: none;
+	border-bottom-color: #E7E7E7;
+	font-size:14px;
+	padding:5px 10px 5px 10px;
+	font-family: Verdana, Geneva, sans-serif;
+} 
+
+.line_price1-2{
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: double;
+	border-left-style: none;
+	border-bottom-color: #E7E7E7;
+	font-size:13px;
+	padding:5px 10px 5px 10px;
+	font-family: Verdana, Geneva, sans-serif;
+} 
+
+
+.line_price1_kucun{
+	font-size:12px;
+	padding:5px 10px 5px 10px;
+	font-family: Verdana, Geneva, sans-serif;
+	width:95%;
+	float:left;
+
+} 
+
+#line_price1_sort{
+	font-size:13px;
+	padding:5px 10px 5px 10px;
+	font-family: Verdana, Geneva, sans-serif;
+
+
+} 
+.zhanzuo{ width:100%; padding:10px 0px 10px 0px;}
+.zhanzuo .hao{
+	float:left;
+	display:block;
+	width:80px;
+	border: 1px solid #CCC;
+	padding:3px 0px 3px 10px;
+}
