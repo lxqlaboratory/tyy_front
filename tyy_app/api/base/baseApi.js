@@ -63,6 +63,7 @@ export function getToken() {
 export function getUniappMenuList() {
   return request.request({
     url: '/app/getUniappMenuList',
+		method: 'POST',
     data: {}
   })
 }
@@ -72,6 +73,7 @@ export function getUniappMenuList() {
 export function indexShopAppApi() {
   return request.request({
     url: '/app/indexShopAppApi',
+	method: 'POST',
     data: {}
   })
 }
