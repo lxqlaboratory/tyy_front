@@ -193,7 +193,7 @@ export default {
 		submit :function(){
 			addOrder({tourList:this.tourList,orderId:this.orderId, planId: this.planId,location:this.location,date:this.date,touristIds:this.touristIds })
 				.then(res => {
-					if(res.status==1){
+					if(res.re==1){
 	                   uni.navigateTo({
 											url: './orderDetail?orderId='+this.orderId+'&tourList='+encodeURIComponent(JSON.stringify(this.tourList))+'&touristIds='+encodeURIComponent(JSON.stringify(this.touristIds))+'  '
 										})	

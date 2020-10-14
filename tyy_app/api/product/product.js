@@ -131,7 +131,7 @@ export function fenxiaoHistory(data) {
 export function fenxiaoTour(data) {
 	return request.request({
 		url: '/app/fenxiaoTour',
-method: 'POST',
+        method: 'POST',
 		data
 	})
 }
@@ -139,7 +139,7 @@ method: 'POST',
 export function tourProduct(data) {
 	return request.request({
 		url: '/app/tourProduct',
-method: 'POST',
+        method: 'POST',
 		data
 	})
 }

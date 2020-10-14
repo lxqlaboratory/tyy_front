@@ -106,6 +106,7 @@ export function getResourseImage(data){
 export function setOrder(data){
 	return request.request({
 		url:'/app/setOrder',
+		method: 'POST',
 		data
 	})
 }
@@ -121,6 +122,7 @@ export function changePersonBase(data){
 export function sendCodePhone(data){
 	return request.request({
 		url:'/app/sendCodePhone',
+		method: 'POST',
 		data
 	})
 }
@@ -128,6 +130,7 @@ export function sendCodePhone(data){
 export function getFenxiaoshangBYarea(data){
 	return request.request({
 		url:'/app/getFenxiaoshangBYarea',
+		method: 'POST',
 		data
 	})
 }
@@ -135,6 +138,7 @@ export function getFenxiaoshangBYarea(data){
 export function getFenxiaoshangYWY() {
   return request.request({
     url: '/app/getFenxiaoshangYWY',
+	method: 'POST',
     data: {}
   })
 }
@@ -142,6 +146,7 @@ export function getFenxiaoshangYWY() {
 export function unitorderPay() {
   return request.request({
     url: '/app/unitorderPay',
+	method: 'POST',
     data: {}
   })
 }
@@ -149,6 +154,7 @@ export function unitorderPay() {
 export function shenhechanpin() {
   return request.request({
     url: '/app/shenhechanpin',
+	method: 'POST',
     data: {}
   })
 }
@@ -156,12 +162,14 @@ export function shenhechanpin() {
 export function shenheCHanpin(data) {
   return request.request({
     url: '/app/shenheCHanpin',
+	method: 'POST',
    data
   })
 }
 export function cuxiaochanpin(data) {
   return request.request({
     url: '/app/cuxiaochanpin',
+	method: 'POST',
    data
   })
 }

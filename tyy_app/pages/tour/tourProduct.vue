@@ -244,7 +244,7 @@
 			},
 			buy(){
 				
-				().then(res => {
+				tourCanbyInit().then(res => {
 					if(res.data==='请完善个人信息'){
 						wx.showToast({
 						     title: '请完善个人信息！',
