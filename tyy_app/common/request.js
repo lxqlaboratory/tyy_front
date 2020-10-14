@@ -44,7 +44,7 @@ const reqInterceptor = async (options) => {
 					  		if (res.confirm) {
 				           getApp().globalData.vueSessionId = ''
 						   uni.navigateTo({
-						   	url: '../index/index'
+						   	url: '../login/loginIndex'
 						   })
 							   
 					  		}
