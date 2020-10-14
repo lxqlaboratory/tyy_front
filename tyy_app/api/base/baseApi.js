@@ -82,6 +82,7 @@ export function indexShopAppApi() {
 export function baseInfoInit() {
   return request.request({
     url: '/app/baseInfoInit',
+	method: 'POST',
     data: {}
   })
 }
@@ -89,6 +90,7 @@ export function baseInfoInit() {
 export function tourCanbyInit() {
   return request.request({
     url: '/app/tourCanbyInit',
+	method: 'POST',
     data: {}
   })
 }
@@ -96,6 +98,7 @@ export function tourCanbyInit() {
 export function getResourseImage(data){
 	return request.request({
 		url:'/app/getResourseImage',
+		method: 'POST',
 		data
 	})
 }
@@ -109,6 +112,7 @@ export function setOrder(data){
 export function changePersonBase(data){
 	return request.request({
 		url:'/app/changePersonBase',
+		method: 'POST',
 		data
 	})
 }

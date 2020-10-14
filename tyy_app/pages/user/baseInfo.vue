@@ -65,7 +65,7 @@
 		onShow() {
 			this.yanzheng = false
 			baseInfoInit().then(res=>{
-				if(res.status === 1){
+				if(res.re === 1){
 				this.phone = res.data.phone
 				this.peridcard = res.data.peridcard
 				this.pername = res.data.pername

@@ -174,6 +174,7 @@
 							 this.price = res.data.price
 							 	this.server = res.data.server
 								that.ListData= JSON.parse(res.data.productDetail)
+						
 								getResourseImage({List:JSON.parse(res.data.tesList)}).then(res => {
 								  this.tesList = res.data
 								})
@@ -242,7 +243,8 @@
 				this.favorite = !this.favorite;
 			},
 			buy(){
-				tourCanbyInit().then(res => {
+				
+				().then(res => {
 					if(res.data==='请完善个人信息'){
 						wx.showToast({
 						     title: '请完善个人信息！',
