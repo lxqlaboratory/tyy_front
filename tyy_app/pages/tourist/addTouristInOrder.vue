@@ -163,7 +163,7 @@
 							  });
 				}else{
 				 addTouristInOrder({planId:this.planId,setPrice:this.setPrice,name:this.name,phone:this.phone,cerNum:this.cerNum,sex:this.sex,relatenode:this.relatenode,orderId:this.orderId,identity:this.identity}).then(res=>{
-							 	if(res.status === 1){
+							 	if(res.re === 1){
 							 		uni.showModal({
 							 		    title: '提示',
 							 			showCancel: false,
@@ -190,7 +190,7 @@
 					    title: '提示',
 						showCancel: false,
 						confirmColor: "#000000",
-					    content: res.errMessage,
+					    content: res.data,
 					    success: function (res) {
 					        if (res.confirm) {
 						     

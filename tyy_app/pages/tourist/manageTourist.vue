@@ -102,7 +102,7 @@ export default {
 					if (res.cancel) {
 					} else if (res.confirm) {
 						delTourist({ touristId: item.id }).then(res => {
-							if (res.status == 1) {
+							if (res.re == 1) {
 						that.tourList.splice(index,1);
 								uni.showModal({
 									title: '提示',

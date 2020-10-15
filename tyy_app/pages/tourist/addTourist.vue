@@ -131,7 +131,7 @@
 							  });
 				}else{
 				 addTourist({name:this.name,phone:this.phone,cerNum:this.cerNum,sex:this.sex,relatenode:this.relatenode}).then(res=>{
-							 	if(res.status === 1){
+							 	if(res.re === 1){
 							 		uni.showModal({
 							 		    title: '提示',
 							 			showCancel: false,

@@ -93,7 +93,7 @@
 			}
 		},
 		onLoad() {
-			getALLGroups().then(res => {
+			findGroupsByName().then(res => {
 				this.groupList = res.data
 			}).catch(err => {
 
