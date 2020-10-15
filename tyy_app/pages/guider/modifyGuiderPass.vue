@@ -65,12 +65,12 @@
 				}
 				else{
 					guiderModifyPwd({oldpassword:this.oldpassword,newpassword:this.newpassword}).then(res=>{
-				    if(res.status === 0){
+				    if(res.re === -1){
 						uni.showModal({
 						    title: '提示',
 							showCancel: false,
 							confirmColor: "#000000",
-						    content: res.errMessage,
+						    content: res.data,
 						    success: function (res) {
 						        if (res.confirm) {
 							     
@@ -95,7 +95,7 @@
 			},
 			cancel(){
 				SignOut({}).then(res=>{
-					if(res.status === 1){
+					if(res.re === 1){
 						uni.showModal({
 						    title: '提示',
 							showCancel: false,

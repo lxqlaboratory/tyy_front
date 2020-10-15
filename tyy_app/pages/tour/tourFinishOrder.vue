@@ -109,7 +109,12 @@ export default {
 		this.orderId = option.orderId;
 		getPlanDate({  productId: this.productId })
 			.then(res => {
-				this.dateList = res.data;
+				if(res.data == "无数据"){
+					this.dateList = ''
+					}else{
+						this.dateList = res.data;
+					}
+				
 			})
 			.catch(err => {});
 	},
