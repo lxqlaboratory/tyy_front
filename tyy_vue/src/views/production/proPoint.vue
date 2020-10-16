@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if ="$_has('LOCATIONUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="$router.push('addNewLocation')">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="$router.push('addNewLocation')">
         新增集合地点
       </el-button>
     </div>
@@ -45,8 +45,8 @@
       </el-table-column>
       <el-table-column  align="center" label="操作" min-width="45">
         <template slot-scope="scope">
-          <el-button v-if ="$_has('LOCATIONUPDATE')" type="primary" size="small" icon="el-icon-edit" @click="editPoint(scope.row.id)">编辑</el-button>
-          <el-button v-if ="$_has('LOCATIONUPDATE')" type="danger" size="small" icon="el-icon-delete" @click="delLocation(scope.row.id)">删除
+          <el-button type="primary" size="small" icon="el-icon-edit" @click="editPoint(scope.row.id)">编辑</el-button>
+          <el-button type="danger" size="small" icon="el-icon-delete" @click="delLocation(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -59,6 +59,9 @@
       style="margin-top: 15px;"
       background
       layout="prev, pager, next"/>
+
+
+
   </div>
 </template>
 
@@ -86,12 +89,12 @@
             delLocation(id){
                 this.$confirm('删除操作不可撤销，是否继续', '警告', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delLocation(id).then(res => {
-                        this.$message({
-                                type: 'success',
-                                message: '删除成功'
-                            }
-                        )
-                        this.getList();
+                      if(res.re===1){
+                        this.$message({type: 'success', message: '删除成功'})
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
+                      this.getList();
                     }).catch(error => {
                         this.getList();
                     })
@@ -99,7 +102,7 @@
             },
             getList() {
                 getLocations().then(res=>{
-                    this.list=res
+                    this.list=res.data
                 }).catch(error=>{})
             }
         }

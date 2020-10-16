@@ -116,7 +116,7 @@
                 console.log(this.$route.query.id)
                 if (this.$route.query.id) {
                     getPointInfo(this.$route.query.id).then(res => {
-                        this.locationform = res
+                        this.locationform = res.data
                     }).catch(error => {
                     })
                 }
@@ -152,16 +152,25 @@
                     if (valid) {
                         if (this.$route.query.id) {
                             editLocation(this.locationform).then(res => {
+                              if(res.re===1){
                                 this.$message({type: 'success', message: '保存成功'})
                                 this.$router.push({path:'proPoint'})
+                              }else{
+                                this.$message({type: 'error', message: res.data})
+                              }
+
+
                             }).catch(error => {
                             })
                         } else {
                             addLocation(this.locationform).then(res => {
+                              if(res.re===1){
                                 this.$message({type: 'success', message: '保存成功'})
-                                console.log(res)
                                 this.$emit("newLocation",res)
                                 this.$router.push({path:'proPoint'})
+                              }else{
+                                this.$message({type: 'error', message: res.data})
+                              }
                             }).catch(error => {
                             })
                         }
