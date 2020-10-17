@@ -47,7 +47,8 @@ export function signyk(data){
 
 export function SignOut(data){
 	return request.request({
-		url:'/appdri/SignOut',
+		url:'/auth/unbounding',
+			method: 'POST',
 		data
 	})
 }

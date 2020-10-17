@@ -92,7 +92,7 @@
 			 
 			 cancel(){
 			 	SignOut({}).then(res=>{
-			 		if(res.status === 1){
+			 		if(res.re === 1){
 			 			uni.showModal({
 			 			    title: '提示',
 			 				showCancel: false,
@@ -106,7 +106,7 @@
 			 			        } 
 			 			    }
 			 			});
-			 		}else if(res.status === 0){
+			 		}else if(res.re === -1){
 			 			uni.showModal({
 			 			    title: '提示',
 			 				showCancel: false,
