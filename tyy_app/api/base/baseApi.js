@@ -55,6 +55,7 @@ export function SignOut(data){
 export function getToken() {
   return request.request({
     url: '/getToken',
+	method: 'POST',
     data: {}
   })
 }
