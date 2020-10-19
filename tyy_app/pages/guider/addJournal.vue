@@ -94,7 +94,7 @@
 					    title: '提示',
 						showCancel: false,
 						confirmColor: "#000000",
-					    content: res.errMessage,
+					    content: res.data,
 					    success: function (res) {
 					        if (res.confirm) {
 						     

@@ -90,8 +90,7 @@
 				  		    success: function (res) {
 				  		        if (res.confirm) {
 									item.photo = ''
-									// onLoad()
-				  			     // uni.navigateBack()
+
 				  		        } 
 				  		    }
 				  		});

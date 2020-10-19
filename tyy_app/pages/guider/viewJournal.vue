@@ -39,7 +39,7 @@ export default {
 	onLoad(options) {
 		this.groupId = options.groupId
 		viewJournal({groupId:this.groupId}).then(res => {
-								if(res.status==1){
+								if(res.re==1){
 					this.jorunalList = res.data;
 			}else{
 			uni.showModal({

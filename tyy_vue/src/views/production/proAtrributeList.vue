@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if ="$_has('ATTRIBUTEUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="v_addAtt=true;newAttName=''">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="v_addAtt=true;newAttName=''">
         新增产品属性
       </el-button>
     </div>
@@ -52,7 +52,7 @@
 
       <el-table-column align="center" label="操作" min-width="45">
         <template slot-scope="scope">
-          <el-button v-if ="$_has('ATTRIBUTEUPDATE')" type="danger" size="small" icon="el-icon-delete" @click="delAtt(scope.row.id)">删除</el-button>
+          <el-button type="danger" size="small" icon="el-icon-delete" @click="delAtt(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,7 +89,7 @@
         methods: {
             getList() {
                 getAtts().then(res => {
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
                 })
             },
@@ -119,11 +119,11 @@
             delAtt(id){
                 this.$confirm('删除操作不可撤销，是否继续', '警告', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delAtt(id).then(res => {
-                        this.$message({
-                                type: 'success',
-                                message: '删除成功'
-                            }
-                        )
+                      if(res.re===1){
+                        this.$message({type: 'success', message: '删除成功'})
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
                         this.getList();
                     }).catch(error => {
                         this.getList();

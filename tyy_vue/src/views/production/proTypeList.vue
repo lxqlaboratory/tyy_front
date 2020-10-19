@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('PROTYPEUPDATE')" type="primary" icon="el-icon-circle-plus-outline"
+      <el-button type="primary" icon="el-icon-circle-plus-outline"
                  @click="v_addFServiceType=true;newProType={ carTypeName:'',typeDes:'',proTypeParent:0}">
         增加一级类目
       </el-button>
-      <a href="https://localhost:8080/tyy/appdri/invoice/downloadtestPdf">下载pdf</a>
+      <!--<a href="https://localhost:8080/tyy/appdri/invoice/downloadtestPdf">下载pdf</a>-->
     </div>
     <el-dialog  v-dialog-drag  :visible.sync="v_addFServiceType" title="增加类目">
       <div>
@@ -43,8 +43,8 @@
 
       <el-table-column min-width="150" align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.proTypeParent===0 && $_has('PROTYPEUPDATE')" type="success" size="small" icon="el-icon-circle-plus-outline" @click="v_addFServiceType=true;newProType={ carTypeName:'',typeDes:'',proTypeParent:scope.row.id}">子分类</el-button>
-          <el-button v-if ="$_has('PROTYPEUPDATE')" :disabled="scope.row.children.length!=0" type="danger" size="small" icon="el-icon-delete"
+          <el-button type="success" size="small" icon="el-icon-circle-plus-outline" @click="v_addFServiceType=true;newProType={ carTypeName:'',typeDes:'',proTypeParent:scope.row.id}">子分类</el-button>
+          <el-button :disabled="scope.row.children.length!=0" type="danger" size="small" icon="el-icon-delete"
                      @click="deleteType(scope.row.id)">删除
           </el-button>
         </template>
@@ -101,7 +101,7 @@
             },
             getList: function () {
               getProTyeNoLimit().then(res => {
-                    this.list = res
+                    this.list = res.data
                     this.rowsKeys = this.list.map(item => item.id)
                 }).catch(error => {
 
