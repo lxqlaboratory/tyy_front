@@ -14,7 +14,13 @@ export function testDri(){
 		data:{'str':'test'}
 	})
 }
-
+export function CCCCCCCCCCCCCCCCC() {
+	return request.request({
+		url: '/CCCCCCCCCCCCCCCCC',
+		method: 'POST',
+		    data: {}
+	})
+}
 
 export function wxLoign(data){
 	return request({
