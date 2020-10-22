@@ -334,7 +334,7 @@
 				} else {
 					
 					tourHaibaoProduct({
-						code: '1-2'
+						code: this.code
 					}).then(res => {
 						editShenchengHaibao({
 							imageCode: res.data,
@@ -347,6 +347,7 @@
 							this.shareFc()
 						}).catch(err => {})
 					}).catch(err => {})
+					
 					
 					
 				}

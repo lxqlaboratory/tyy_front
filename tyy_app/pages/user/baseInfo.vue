@@ -34,7 +34,7 @@
 				<view class="bottomLine"/>
 		</view>
 		<one-input v-model="realC" @finish="finishedOne" v-if="yanzheng"></one-input>
-		<button type="primary" class="buu"  @click="aaa">提交</button>
+		<button type="primary" class="buu"  @click="submit1">提交</button>
 		
 		<text class="mix-btn" @click="cancel">解除绑定</text>
 	</view>

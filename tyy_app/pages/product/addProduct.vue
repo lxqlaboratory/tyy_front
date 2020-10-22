@@ -363,7 +363,7 @@
 											getDisType().then(res8 => {
 												this.disList = res8.data;
 												getProductDetail({id:this.id}).then(res9 => {
-														if(res9.status==1){
+														if(res9.re==1){
 															this.commodity.name=res9.data.name
 															this.commodity.proType_2=res9.data.proType_2
 															this.commodity.saleState=res9.data.saleState
