@@ -234,7 +234,7 @@
 				// this.disSelectList=[{roleName:'缺省结算项目',planCharge:[],des:''}]
 				// console.log(e)
 				var eList = e.target.value
-				
+				console.log(e.target.value);
 				// 销售端口增加
 				if (eList.length > this.lastEList.length) {
 					if (this.lastEList.length != 0) {
@@ -251,7 +251,6 @@
 								for (var k = 0, lenK = this.disList.length; k < lenK; ++k) {
 									if (this.disList[k].id == eList[i]) {
 										// item.title=this.disList[k].roleName
-	
 										var item = {	
 											portId: eList[i],
 											planId: this.planId,
@@ -289,7 +288,6 @@
 											}],
 											isSpecial: true,																				
 									}
-									// item.title=this.disList[i].roleName
 									this.disSelectList.push(item);
 								}
 							}
@@ -316,7 +314,8 @@
 							}
 							console.log(this.lastEList[i])
 							for (var k = 0, lenK = this.disSelectList.length; k < lenK; ++k) {
-								if (this.disSelectList[k].roleName == delArea) {
+								if (this.disSelectList[k].portName == delArea) {
+									
 									this.disSelectList.splice(k, 1)
 									this.lastEList = e.target.value
 									this.current = 0

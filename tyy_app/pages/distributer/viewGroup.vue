@@ -30,7 +30,23 @@ import { distributerViewGroup } from '../../api/guider/guider.js';
 
 		onShow() {
 			distributerViewGroup().then(res => {
+				
+						if(res.status==0){
+						uni.showModal({
+					    title: '提示',
+						showCancel: false,
+						confirmColor: "#000000",
+					    content: res.data,
+					    success: function (res) {
+					        if (res.confirm) {
+							 uni.navigateBack()
+				
+					        } 
+					    }
+					});
+				}else{
 				this.groupList = res.data
+				}	
 			});
 		},
 		methods: {

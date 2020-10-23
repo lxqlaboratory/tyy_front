@@ -375,7 +375,7 @@
 							uni.showModal({
 								showCancel: false,
 								title: '提示',
-								content: res.errMessage
+								content: res.data
 							});
 						}
 					}).catch(err => {})

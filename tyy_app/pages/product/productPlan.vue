@@ -15,7 +15,7 @@
 					</view>
 					<view class="detail-row">
 						<text>出团时间</text>
-						<text>{{item.travelDate}}</text>
+						<text>{{item.date}}</text>
 					</view>
 					<view class="detail-row">
 						<view>
@@ -72,12 +72,12 @@
 						backgroundColor: '#F37B1D',
 					}
 				},
-				{
-					text: "订单",
-					style: {
-						backgroundColor: 'orange',
-					}
-				},
+				// {
+				// 	text: "订单",
+				// 	style: {
+				// 		backgroundColor: 'orange',
+				// 	}
+				// },
 				{
 					text: "团队",
 					style: {
@@ -174,12 +174,12 @@
 						}
 					});
 				}
-				else {
-					uni.navigateTo({
-						url: './productPlan?productId=' + productId
-					
-					});
-				}
+				// else {
+				// 	uni.navigateTo({
+				// 		url: './productPlan?productId=' + this.productId
+				// 	
+				// 	});
+				// }
 			
 			
 			},
