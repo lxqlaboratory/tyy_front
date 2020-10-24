@@ -55,17 +55,19 @@
 					    title: '提示',
 						showCancel: false,
 						confirmColor: "#000000",
-					    content: res.errMessage,
+					    content: res.data,
 					    success: function (res) {
 					        if (res.confirm) {
 								 uni.navigateBack()
 					        } 
 					    }
 					});
+				}else{
+					this.dataList = res.data
+					this.size = this.dataList.length
+					// console.log(this.dataList[0].touName)
 				}
-							this.dataList = res.data
-							this.size = this.dataList.length
-							// console.log(this.dataList[0].touName)
+
 						}).catch(err => {
 							
 						})
