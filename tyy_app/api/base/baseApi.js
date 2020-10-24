@@ -23,8 +23,9 @@ export function CCCCCCCCCCCCCCCCC() {
 }
 
 export function wxLoign(data){
-	return request({
-		url:'/appdri/wxLoign',
+	return request.request({
+		url:'/app/wxLoign',
+		method: 'POST',
 		data
 	})
 }

@@ -104,8 +104,10 @@
 			 			    content: '解除绑定成功',
 			 			    success: function (res) {
 			 			        if (res.confirm) {
-			 				       uni.switchTab({  
-			 						   url:'../index/index'
+			 				       uni.navigateTo({
+			 				       	
+			 				        
+			 						   url:'../login/loginIndex'
 			 					   })
 			 			        } 
 			 			    }
