@@ -108,19 +108,17 @@
 
           </el-form-item>
 
-
           <el-form-item label="结算类型" prop="ticketType">
             <div style="display: flex;width: 80%; justify-content: flex-start;flex-wrap: wrap;align-items: center;">
               <el-checkbox-group v-model="productForm.ticketType">
-                <el-checkbox :key="item.id" :label="item.id" border size="medium"
-                             v-for="item in ticketTypeList">{{item.dataItemName}}
+                <el-checkbox :key="item.value" :label="item.value" border size="medium"
+                             v-for="item in ticketTypeList">{{item.label}}
                 </el-checkbox>
 
 
               </el-checkbox-group>
             </div>
           </el-form-item>
-
 
           <el-form-item label="创建时间" prop="createTime" v-if="productForm.createTime">
             <el-input disabled v-model.trim="productForm.createTime"></el-input>
@@ -620,7 +618,7 @@
 
                 getResByNames(data).then(res=>{
                     if (res&&res.length>0){
-                        this.productForm.proTraDetail[index].images=res;
+                        this.productForm.proTraDetail[index].images=res.data;
                     }
                     console.log(res);
                 })
@@ -698,18 +696,46 @@
         this.productForm.proType_2 = ''
       },
       initProTypeList() {
-        Promise.all([getSupInfo(), getSupType(), getCarTypeList(), getProTye(), getSerTypes(), getAtts(), getLocations(), getDisType(), getTems(),getTicketTypeList()]).then(res => {
-          this.supList = res[0]
-          this.supTypeList = res[1]
-          this.carTypeList = res[2]
-          this.proTypeList = res[3]
-          this.serTypeList = res[4]
-          this.attsTypeList = res[5]
-          this.locationList = res[6]
-          this.disTypeList = res[7]
-          this.temsList = res[8]
-          this.ticketTypeList = res[9]
-
+        getSupInfo().then(res => {
+          this.supList = res.data
+        }).catch(error => {
+        })
+        getSupType().then(res => {
+          this.supTypeList = res.data
+        }).catch(error => {
+        })
+        getCarTypeList().then(res => {
+          this.carTypeList = res.data
+        }).catch(error => {
+        })
+        getProTye().then(res => {
+          this.proTypeList = res.data
+        }).catch(error => {
+        })
+        getSerTypes().then(res => {
+          this.serTypeList = res.data
+        }).catch(error => {
+        })
+        getAtts().then(res => {
+          this.attsTypeList = res.data
+        }).catch(error => {
+        })
+        getLocations().then(res => {
+          this.locationList = res.data
+        }).catch(error => {
+        })
+        getDisType().then(res => {
+          this.disTypeList = res.data
+        }).catch(error => {
+        })
+        getTicketTypeList().then(res => {
+          this.ticketTypeList = res.data
+        }).catch(error => {
+        })
+        // getTems().then(res => {
+        //   this.temsList = res.data
+        // }).catch(error => {
+        // })
           this.disTypeList.forEach(item => {
               this.$set(item, 'planCharge', [
                 {
@@ -726,99 +752,101 @@
           if (this.$route.query.id) {
             //初始化详情页面
             getProductInfo(this.$route.query.id).then(res => {
-              console.log(res)
-              this.productForm.createTime = res.createTime
-              if (res.disList)
-                this.productForm.disList = JSON.parse(res.disList)
-              else
-                this.productForm.disList = []
+              console.log(res.data)
+              this.productForm.createTime = res.data.product.createTime
+              // if (res.disList)
+              //   this.productForm.disList = JSON.parse(res.data.disList)
+              // else
+              //   this.productForm.disList = []
 
-              this.productForm.id = res.id
+              this.productForm.id = res.data.product.id
+
+              //
+              // if (this.$route.query.copyType === 'sk') {
+              //   this.productForm.id = -1
+              //   this.productForm.serType = 1
+              // }
 
 
-              if (this.$route.query.copyType === 'sk') {
-                this.productForm.id = -1
-                this.productForm.serType = 1
-              }
+              this.productForm.name = res.data.product.name
+              this.productForm.proAtts = JSON.parse(res.data.product.proAtts)
+              this.productForm.ticketType = JSON.parse(res.data.product.ticketType)
 
+              this.productForm.proAution = res.data.product.proAution
+              this.productForm.proBuy = res.data.product.proBuy
 
-              this.productForm.name = res.name
-              this.productForm.proAtts = JSON.parse(res.proAtts)
-              this.productForm.ticketType = JSON.parse(res.ticketType)
-              console.log("")
-              this.productForm.proAution = res.proAution
-              this.productForm.proBuy = res.proBuy
+              this.productForm.serType = res.data.product.serType
 
-              this.productForm.serType = res.serType
+              this.productForm.proCarTypes = res.data.product.proCarTypes
 
-              this.productForm.proCarTypes = JSON.parse(res.proCarTypes)
-              this.productForm.proDateNum = res.proDateNum
-              this.productForm.proDes = res.proDes
-              this.productForm.proHotel = res.proHotel
-              this.productForm.proLocation = JSON.parse(res.proLocation)
+              this.productForm.proDateNum = res.data.product.proDateNum
+              this.productForm.proDes = res.data.product.proDes
+              this.productForm.proHotel = res.data.product.proHotel
 
-              this.productForm.proMenu = res.proMenu
+              this.productForm.proLocation = JSON.parse(res.data.product.proLocation)
 
-              this.productForm.proNotice = res.proNotice
+              this.productForm.proMenu = res.data.product.proMenu
 
-              this.productForm.proNum = res.proNum
+              this.productForm.proNotice = res.data.product.proNotice
 
-              this.productForm.proPriStan = res.proPriStan
+              this.productForm.proNum = res.data.product.proNum
 
-              this.productForm.proScene = res.proScene
+              this.productForm.proPriStan = res.data.product.proPriStan
 
-              this.productForm.proServer = res.proServer
+              this.productForm.proScene = res.data.product.proScene
 
-              this.productForm.proTravel = res.proTravel
+              this.productForm.proServer = res.data.product.proServer
 
-              this.productForm.proTraDetail = JSON.parse(res.proTraDetail)
+              this.productForm.proTravel = res.data.product.proTravel
 
-              this.productForm.proType_1 = res.proType_1
+              this.productForm.proTraDetail = JSON.parse(res.data.product.proTraDetail)
 
-              this.productForm.proType_2 = res.proType_2
+              this.productForm.proType_1 = res.data.proType_1
 
-              this.productForm.saleState = res.saleState
+              console.log("proType_1"+this.productForm.proType_1)
+              this.productForm.proType_2 = res.data.proType_2
 
-              this.productForm.proFit = res.proFit
+              this.productForm.saleState = res.data.product.saleState
 
-              this.productForm.proOutPrice = res.proOutPrice
-              this.productForm.saCost = res.saCost
-              this.productForm.minTouNum = res.minTouNum
+              this.productForm.proFit = res.data.product.proFit
+
+              this.productForm.proOutPrice = res.data.product.proOutPrice
+              this.productForm.saCost = res.data.product.saCost
+              this.productForm.minTouNum = res.data.product.minTouNum
 
 
               if (res.num_time > 0) {
-                this.num_time = res.num_time
+                this.num_time = res.data.num_time
               }
 
-              if (res.agency !== "" && res.agency != "{}" && res.agency != null && res.agency != "undefined") {
-                this.productForm.agency = JSON.parse(res.agency)
+              if (res.data.product.agency !== "" && res.data.product.agency !== "{}" && res.agency != null && res.data.product.agency !== "undefined") {
+                this.productForm.agency = JSON.parse(res.data.product.agency)
               }
 
-              this.fileList = res.fileList
+              // this.fileList = res.data.fileList
 
-              this.imageIndexList = res.imageIndexList
-              this.imageTesIndexList = res.imageTesIndexList
-
-
-              this.productForm.disList.forEach(item => {
-
-                if (item.isSpecial === false) {
-                  //如果他是默认值，则把他付为默认值
-                  this.productForm.defalutPlanCharge = item.planCharge
-                }
-              })
+              this.imageIndexList = res.data.imageIndexList
+              this.imageTesIndexList = res.data.imageTesIndexList
+              //
+              // this.productForm.disList.forEach(item => {
+              //
+              //   if (item.isSpecial === false) {
+              //     //如果他是默认值，则把他付为默认值
+              //     this.productForm.defalutPlanCharge = item.planCharge
+              //   }
+              // })
 
               //this.defalutPlanCharge=[]
 
               //  console.log(this.productForm)
             }).catch()
           }
-        })
+
       },
 
       addLocationNew(location) {
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
           this.v_addLocation = false
         }).catch(error => {
         })
@@ -879,6 +907,7 @@
 
         this.productForm.disListStr = JSON.stringify(this.productForm.disList)
         this.productForm.proTravelStr = JSON.stringify(this.productForm.proTraDetail)
+        this.productForm.proTravel = this.productForm.proTraDetail
         this.productForm.agencyStr = JSON.stringify(this.productForm.agency)
         this.productForm.defalutPlanChargeStr = JSON.stringify(this.productForm.defalutPlanCharge)
         this.productForm.ticketType=JSON.stringify(this.productForm.ticketType)
@@ -887,7 +916,11 @@
         this.productForm.num_time = this.num_time
         this.onSave = true
         addPro(this.productForm).then(res => {
-          this.$message({type: 'success', message: '保存产品成功'})
+          if(res.re===1){
+            this.$message({type: 'success', message: '保存产品成功'})
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
           this.onSave = false
 
 
@@ -896,7 +929,7 @@
             this.$router.back()
           }
           else{
-            this.$router.push({query: {proNum: res.proNum,action:'open'}, name: 'ProList'})
+            this.$router.push({query: {proNum: res.data.proNum,action:'open'}, name: 'ProList'})
           }
 
 

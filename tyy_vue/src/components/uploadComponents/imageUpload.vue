@@ -22,7 +22,7 @@
 
           <div
             style="display: flex;flex-direction: row;justify-content: space-around;align-items: center;margin-top: 15px;">
-            <div :key="item.rId" @click="chooseImage(item)" style="width: 23%;height: 29vh;" v-for="item in list">
+            <div :key="item.rId" @click="chooseImage(item)" style="width: 23%;height: 29vh;" v-for="item in list.slice((currentPage-1)*pageSize,currentPage*pageSize)">
               <el-card :body-style="{ padding: '0px' }">
                 <el-image :src="item.url" fit="contain" style="width: 100%;height: 21vh;"/>
                 <div style="padding: 8px;">
@@ -36,13 +36,12 @@
           </div>
           <div style="display: flex;align-items: center;justify-content:space-between;margin-top:15px;">
             <el-pagination
-              :current-page.sync="queryForm.pageNum"
-              :page-size="queryForm.pageSize"
-              :total="total"
-              @current-change="getList"
-              background
-              layout="prev, pager, next"
-              style="margin-top: 15px;"/>
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :page-sizes="[5]"
+              :page-size="pageSize"
+              layout="sizes, prev, pager, next"
+              :total="list.length"/>
           </div>
 
 
@@ -88,7 +87,7 @@
 </template>
 
 <script>
-    import {getResourceList, getResourceTypeList} from "@/api/resource";
+    import {getResourceList, getResourceTypeList,getResourceListPage} from "@/api/resource";
     import {getToken} from "@/api/baseApi";
 
     export default {
@@ -98,13 +97,16 @@
         },
         data() {
             return {
-                queryForm: {
+              // 当前页
+              currentPage: 1,
+              // 每页多少条
+              pageSize: 5,
+              queryForm: {
                     superType: 'IMAGE',
                     fileName: '',
                     resType: '',
-                    pageNum: 1,
                     pageSorted: 'desc',
-                    pageSize: 4
+                    currentPage:1
                 },
                 list: [],
                 total: 0,
@@ -123,10 +125,17 @@
             this.getList()
         },
         methods: {
-            getList() {
+          // 每页多少条
+          handleSizeChange(val) {
+            this.pageSize = val;
+          },
+          // 当前页
+          handleCurrentChange(val) {
+            this.currentPage = val;
+          },
+          getList() {
                 getResourceList(this.queryForm).then(res => {
-                    this.list = res.list
-                    this.total = res.pagination.total
+                    this.list = res.data
                 }).catch(error => {
                 })
             },
@@ -176,9 +185,10 @@
             submitUpload() {
                 this.$refs.upload.submit();
             },
+
             getResourceTypeList() {
                 getResourceTypeList('IMAGE').then(res => {
-                    this.resTypeList = res
+                    this.resTypeList = res.data
                     this.uploadForm['x:resType'] = this.resTypeList[0].id
                 }).catch(error => {
                 })

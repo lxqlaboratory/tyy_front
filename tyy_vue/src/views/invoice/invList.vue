@@ -5,29 +5,29 @@
     <el-row align="medium" type="flex">
       <el-col :span="22">
         <div class="filter-container">
+          <!--<div class="filter-item">-->
+            <!--<label>申请时间</label>-->
+            <!--<el-date-picker-->
+              <!--:picker-options="pickerOptions"-->
+              <!--end-placeholder="结束日期"-->
+              <!--range-separator="-"-->
+              <!--start-placeholder="开始日期"-->
+              <!--type="daterange"-->
+              <!--v-model="queryForm.createTime"-->
+              <!--value-format="yyyy-MM-dd">-->
+            <!--&gt;-->
+            <!--</el-date-picker>-->
+
+          <!--</div>-->
+
+
           <div class="filter-item">
-            <label>申请时间</label>
-            <el-date-picker
-              :picker-options="pickerOptions"
-              end-placeholder="结束日期"
-              range-separator="-"
-              start-placeholder="开始日期"
-              type="daterange"
-              v-model="queryForm.createTime"
-              value-format="yyyy-MM-dd">
-            >
-            </el-date-picker>
-
-          </div>
-
-
-          <div class="filter-item">
-            <label>流水号</label>
+            <label>流水号码</label>
             <el-input v-model="queryForm.number" clearable></el-input>
           </div>
 
           <div class="filter-item">
-            <label>订单号</label>
+            <label>订单号码</label>
             <el-input v-model="queryForm.orderNum" clearable></el-input>
           </div>
 
@@ -60,7 +60,7 @@
       </el-col>
       <el-col :span="8">
         <el-button @click="getList" icon="el-icon-search" style="width: 180px" type="primary">查询</el-button>
-        <el-button v-if="$_has('INVUPDATE')" @click="$router.push({name:'addInvoice'})" icon="el-icon-plus" style="width: 180px" type="warning">
+        <el-button @click="$router.push({name:'addNewInvoice'})" icon="el-icon-plus" style="width: 180px" type="warning">
           申请发票
         </el-button>
       </el-col>
@@ -147,8 +147,8 @@
 
       <el-table-column align="center" label="操作" min-width="18">
         <template slot-scope="scope">
-          <el-button v-if="$_has('INVUPDATE')" @click="$router.push({name:'addInvoice',query:{id:scope.row.id}})" type="primary">处理</el-button>
-          <el-button v-if="$_has('INVUPDATE')" @click="delInvoice(scope.row.id)" type="danger">删除</el-button>
+          <el-button @click="$router.push({name:'addInvoice',query:{id:scope.row.id}})" type="primary">处理</el-button>
+          <el-button @click="delInvoice(scope.row.id)" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -263,8 +263,7 @@
                 getInvList(this.queryForm).then(res => {
                     console.log(res)
                     this.onLoading = false
-                    this.list = res.list
-                    this.total = res.pagination.total
+                    this.list = res.data
                 }).catch(error => {
                 })
             }

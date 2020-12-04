@@ -96,8 +96,8 @@
 
       <el-table-column align="center" label="订单号" prop="orderNum">
         <template slot-scope="scope">
-          <el-button @click="$router.push({name:'orderList',params:{orderNum:scope.row.orderNum}})" type="text">
-            {{scope.row.orderNum}}
+          <el-button @click="$router.push({name:'wechatorderList',params:{orderName:scope.row.orderName}})" type="text">
+            {{scope.row.orderName}}
           </el-button>
         </template>
       </el-table-column>
@@ -105,11 +105,8 @@
       <el-table-column align="center" label="产品名">
         <template slot-scope="scope">
 
-          <el-button @click="toProduct(scope.row.proNum,scope.row.proSertype)" style="font-size: 13px;"
-                     type="text" v-if="scope.row.proSertype===1">【散客】{{scope.row.proName}}
-          </el-button>
-          <el-button @click="toProduct(scope.row.proNum,scope.row.proSertype)" style="font-size: 13px;"
-                     type="text" v-if="scope.row.proSertype===2">【团队】{{scope.row.proName}}
+          <el-button @click="$router.push({name: 'ProList', params: {productName:scope.row.productName}})" style="font-size: 13px;"
+                     type="text" >【散客】{{scope.row.productName}}
           </el-button>
         </template>
       </el-table-column>
@@ -117,8 +114,8 @@
       <el-table-column align="center" label="团队编号">
         <template slot-scope="scope">
 
-          <el-button @click="toGroup(scope.row.groupNum,scope.row.proSertype)" style="font-size: 13px;"
-                     type="text" v-if="scope.row.groupNum">【团队】{{scope.row.groupName}}
+          <el-button @click="$router.push({name: 'groupNew', params: {groupName:scope.row.groupName}})" style="font-size: 13px;"
+                     type="text" v-if="scope.row.groupNum!=0">【团队】{{scope.row.groupName}}
           </el-button>
           <span style="color: orangered" v-else>未拼团</span>
         </template>
@@ -126,18 +123,18 @@
 
       <el-table-column align="center" label="出团日期">
         <template slot-scope="scope">
-          {{ scope.row.travelDate.substr(0,10) }}
+          {{ scope.row.travelDate}}
         </template>
       </el-table-column>
 
 
-      <el-table-column align="center" label="状态">
-        <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.state===1">已审核</el-tag>
-          <el-tag type="info" v-if="scope.row.state===0">未审核</el-tag>
-          <el-tag type="error" v-if="scope.row.state===-1">已拒绝</el-tag>
-        </template>
-      </el-table-column>
+      <!--<el-table-column align="center" label="状态">-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-tag type="success" v-if="scope.row.state===1">已审核</el-tag>-->
+          <!--<el-tag type="info" v-if="scope.row.state===0">未审核</el-tag>-->
+          <!--<el-tag type="error" v-if="scope.row.state===-1">已拒绝</el-tag>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="申请开票次数" prop="invNum">
         <template slot-scope="scope">
@@ -355,7 +352,7 @@
 
   //报账页面 通过query Id得到 页面信息。展示订单列表 展示报账记录 录入计调报账 录入签单挂账
   export default {
-    name: "addInvoice",
+    name: "addNewInvoice",
     data() {
       return {
           invState:'',
@@ -449,6 +446,7 @@
         },
         selectingDis(item){
             this.queryForm.disId=item.unitId;
+
             this.getOrderList();
 
         },
@@ -515,7 +513,8 @@
       },
       getOrderList() {
         getOrders(this.queryForm).then(res => {
-          this.orderList = res.list;
+          this.orderList = res.data;
+
             this.total = res.pagination.total;
         }).catch(error => {
         })
@@ -523,9 +522,9 @@
         getInvInfo(){
             getInvInfo(this.$route.query.id).then(res=>{
                 console.log(res);
-                this.invoiceForm=res.invInfo;
-                this.disInfo=res.disInfo;
-                this.orderList=res.orderList;
+                this.invoiceForm=res.data.invInfo;
+                this.disInfo=res.data.disInfo;
+                this.orderList=res.data.orderList;
                 this.queryForm.disId=this.disInfo.id;
                 this.invState=this.invoiceForm.state;
             }).catch(err=>{

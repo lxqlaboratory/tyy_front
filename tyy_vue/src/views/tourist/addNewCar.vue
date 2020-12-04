@@ -98,19 +98,19 @@
               if (this.$route.query.id){
                   getCarInfo(this.$route.query.id).then(res=>{
                       console.log(res)
-                      this.carForm=res
+                      this.carForm=res.data
                   })
               }
             },
             getSupList:function(){
                 getSupInfo().then(res=>{
-                    this.supList=res
+                    this.supList=res.data
                 })
 
             },
             getCarTypeList: function() {
                 getCarTypeList().then(res => {
-                    this.carTypeList = res
+                    this.carTypeList = res.data
                 })
             },
             submitForm(formName) {

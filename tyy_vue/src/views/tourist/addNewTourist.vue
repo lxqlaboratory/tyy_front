@@ -118,13 +118,13 @@
               if (this.$route.query.id){
                   getTouInfo(this.$route.query.id).then(res=>{
                       console.log(res)
-                      this.touristFrom=res
+                      this.touristFrom=res.data
                   })
               }
             },
             getCerTypeList: function() {
                 getCerTypes(this.cerTypeForm).then(res => {
-                    this.cerTypeList = res
+                    this.cerTypeList = res.data
                 })
             },
             submitForm(formName) {
@@ -132,7 +132,11 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         addTourist(this.touristFrom).then(res => {
+                          if(res.re===1){
                             this.$message({type: 'success', message: "编辑游客信息成功！"})
+                          }else{
+                            this.$message({type: 'error', message: res.data})
+                          }
                             this.onSave=false
                             this.$router.back()
                         }).catch(error => {

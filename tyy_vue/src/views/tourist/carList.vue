@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('CARUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="addNewCar">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addNewCar">
         新增车辆
       </el-button>
     </div>
@@ -71,10 +71,10 @@
 
       <el-table-column align="center" label="操作" min-width="80">
         <template slot-scope="scope">
-          <el-button v-if="$_has('CARUPDATE')" type="text" @click="carInfo(scope.row.id)">
+          <el-button type="text" @click="carInfo(scope.row.id)">
             修改
           </el-button>
-          <el-button v-if="$_has('CARUPDATE')" type="text" style="color: red" @click="deleteCar(scope.row.id)">删除</el-button>
+          <el-button type="text" style="color: red" @click="deleteCar(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -150,11 +150,15 @@
             deleteCar: function (id) {
                 this.$confirm('删除操作不可撤销，是否继续', '警告', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delCar(id).then(res => {
+                      if(res.re===1){
                         this.$message({
-                                type: 'success',
-                                message: '删除成功'
-                            }
+                            type: 'success',
+                            message: '删除成功'
+                          }
                         )
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
                         this.getList();
                     }).catch(error => {
                         this.getList();
@@ -164,13 +168,13 @@
 
             getList: function () {
                 getCarList().then(res => {
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
                 })
             },
             getCarTypeList: function () {
                 getCarTypeList().then(res => {
-                    this.carTypeList = res
+                    this.carTypeList = res.data
                 }).catch(error => {
 
                 })

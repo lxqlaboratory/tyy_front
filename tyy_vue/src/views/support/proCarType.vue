@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('CARTYPEUPDATE')" type="primary" icon="el-icon-circle-plus-outline"
+      <el-button type="primary" icon="el-icon-circle-plus-outline"
                  @click="v_addCarType=true;newCarType={}">
         增加车型
       </el-button>
@@ -209,10 +209,10 @@
         <el-table-column min-width="150" align="center" label="操作">
           <template slot-scope="scope">
 
-            <el-button v-if="$_has('CARTYPEUPDATE')" type="success" size="small" icon="el-icon-circle-plus-outline" @click="v_editCarType=true;editCarType=list.find(item=>(item.id===scope.row.id))">
+            <el-button type="success" size="small" icon="el-icon-circle-plus-outline" @click="v_editCarType=true;editCarType=list.find(item=>(item.id===scope.row.id))">
               编辑
             </el-button>
-            <el-button v-if="$_has('CARTYPEUPDATE')" type="danger" size="small" icon="el-icon-delete"
+            <el-button type="danger" size="small" icon="el-icon-delete"
                        @click="deleteType(scope.row.id)">删除
             </el-button>
           </template>
@@ -277,10 +277,14 @@
         methods: {
             editType:function(){
               editCarType(this.editCarType).then(res=>{
+                if(res.re===1){
                   this.$message({
-                      type:'success',
-                      message:'保存成功'
+                    type:'success',
+                    message:'保存成功'
                   })
+                }else{
+                  this.$message({type: 'error', message: res.data})
+                }
                   this.getList()
                   this.v_editCarType=false
               })  .catch(error=>{})
@@ -289,10 +293,14 @@
 
             saveNewServiceType: function () {
                 addCarType(this.newCarType).then(res => {
+                  if(res.re===1){
                     this.$message({
-                        type: 'success',
-                        message: '增加车型成功'
+                      type: 'success',
+                      message: '增加车型成功'
                     })
+                  }else{
+                    this.$message({type: 'error', message: res.data})
+                  }
                     this.getList()
                     this.v_addCarType = false
                 }).catch(error => {
@@ -301,7 +309,7 @@
             getList: function () {
                 getCarTypeList().then(res => {
                     console.log(res)
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
 
                 })
@@ -311,11 +319,14 @@
             deleteType: function (id) {
                 this.$confirm('此操作不可撤销，是否继续？', '提示', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delCarType(id).then(res => {
-
+                      if(res.re===1){
                         this.$message({
-                            type: 'success',
-                            message: '删除成功'
+                          type: 'success',
+                          message: '删除成功'
                         })
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
                         this.getList();
                     }).catch(error => {
                         this.getList();

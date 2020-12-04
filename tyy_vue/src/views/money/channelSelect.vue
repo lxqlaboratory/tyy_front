@@ -25,12 +25,12 @@
             },
         created() {
         getChannelTree().then(res=>{
-            res.forEach(data=>{
+            res.data.forEach(data=>{
                 let arr={};
                 arr.value=data.name;
 
             });
-            this.channels=res;
+            this.channels=res.data;
         });
         },
 

@@ -420,35 +420,35 @@
 
       <el-table-column align="center" label="操作" min-width="25">
         <template slot-scope="scope">
-          <el-button v-if ="$_has('PROUPDATE')" @click="checkPro(scope.row)" size="mini" type="success">产品审核</el-button>
-          <!--<el-popover style="margin: 0 10px">-->
-            <!--<div>-->
-              <!--<div>-->
-                <!--<el-button v-if ="$_has('PROUPDATE')" @click="copyProduct(scope.row.id,'sk')" size="mini" type="primary">-->
-                  <!--复制为散客产品-->
-                <!--</el-button>-->
-              <!--</div>-->
-              <!--<div style="margin-top: 5px;">-->
-                <!--<el-button v-if ="$_has('PROUPDATE')" @click="copyProduct(scope.row.id,'td')" size="mini" type="success">-->
-                  <!--复制为团队产品-->
-                <!--</el-button>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<el-button v-if ="$_has('PROUPDATE')" size="mini" slot="reference" type="warning">产品复制-->
-            <!--</el-button>-->
-          <!--</el-popover>-->
-          <!--<el-button v-if ="$_has('PROUPDATE')" @click="delProduct(scope.row.id)" size="mini" type="danger">产品删除</el-button>-->
+          <el-button @click="checkPro(scope.row)" size="mini" type="primary">产品审核</el-button>
+          <el-popover style="margin: 0 10px">
+            <div>
+              <div>
+                <el-button @click="copyProduct(scope.row.id,'sk')" size="mini" type="primary">
+                  复制为散客产品
+                </el-button>
+              </div>
+              <div style="margin-top: 5px;">
+                <el-button @click="copyProduct(scope.row.id,'td')" size="mini" type="success">
+                  复制为团队产品
+                </el-button>
+              </div>
+            </div>
+            <el-button size="mini" slot="reference" type="warning">产品复制
+            </el-button>
+          </el-popover>
+          <el-button @click="delProduct(scope.row.id)" size="mini" type="danger">产品删除</el-button>
 
-          <!--<br/>-->
-          <!--<div style="margin-top: 5px;">-->
+          <br/>
+          <div style="margin-top: 5px;">
 
-            <!--<el-button v-if ="$_has('ORDERUPDATE')" @click="$router.push({name:'ProInfo',query:{id:scope.row.id}})" size="mini" type="success">-->
-              <!--录入订单-->
-            <!--</el-button>-->
+            <el-button @click="$router.push({name:'ProInfo',query:{id:scope.row.id}})" size="mini" type="success">
+              录入订单
+            </el-button>
 
-            <!--<el-button v-if ="$_has('PLANUPDATE')" @click="proPlan(scope.row)" size="mini" type="primary">添加计划</el-button>-->
-            <!--<el-button @click="exportTravel(scope.row.id)" size="mini" type="warning">导出行程</el-button>-->
-          <!--</div>-->
+            <el-button @click="proPlan(scope.row.id)" size="mini" type="primary">添加计划</el-button>
+            <el-button @click="exportTravel(scope.row.id)" size="mini" type="warning">导出行程</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -662,13 +662,13 @@
           this.v_addPlan = false
         })
       },
-      proPlan(item) {
-        getProTicList(item.id).then(res => {
-          this.ticketTypeList = res
+      proPlan(id) {
+        getProTicList(id).then(res => {
+          this.ticketTypeList = res.data
         }).catch(error => {
         })
         //增加新计划
-        this.planAddForm.proId = item.id
+        this.planAddForm.proId = id
         this.planAddForm.disList = []
         this.planAddForm.saleState = true
         this.planAddForm.travelDate = ''
@@ -712,19 +712,19 @@
       initList() {
 
         getProTye().then(res => {
-          this.proTypeList = res
+          this.proTypeList = res.data
         }).catch(error => {
         })
         getSerTypes().then(res => {
-          this.serTypeList = res
+          this.serTypeList = res.data
         }).catch(error => {
         })
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
         }).catch(error => {
         })
         getDisType().then(res => {
-          this.disTypeList = res
+          this.disTypeList = res.data
           this.disTypeList.forEach(item => {
             this.$set(item, 'planCharge', [
               {
@@ -741,7 +741,7 @@
       },
       addLocationNew(location) {
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
           this.v_addLocation = false
         }).catch(error => {
         })
@@ -803,14 +803,13 @@
       getList() {
         this.onLoading = true
         getNoCheckPros(this.queryForm).then(res => {
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
-
-          if(this.$route.query.action==='open'&&this.autoOpenTimes===0){
-            this.proPlan(this.list[0])
-            this.autoOpenTimes++
-          }
+          //
+          // if(this.$route.query.action==='open'&&this.autoOpenTimes===0){
+          //   this.proPlan(this.list[0])
+          //   this.autoOpenTimes++
+          // }
         }).catch(error => {
           this.onLoading = false
         })

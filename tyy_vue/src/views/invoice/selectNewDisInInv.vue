@@ -170,7 +170,7 @@
       getList() {
         this.onLoading = true
         showDisList(this.orderForm).then(res => {
-          this.disList = res.WechatUnitList
+          this.disList = res.data.WechatUnitList
           this.total = res.pagination.total
           this.onLoading = false
         }).catch(error => {

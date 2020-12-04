@@ -62,10 +62,10 @@
         <upload-images v-model="guiderform.images" :value="guiderform.images" :res-type="5"></upload-images>
       </el-form-item>
       <el-form-item style="width: 80%;display: flex;flex-direction: row;justify-content: flex-start;margin: 15px;">
-        <el-button v-if="!on_edit&&$_has('GUIDERUPDATE')" type="warning" @click="on_edit=true">修改导游信息</el-button>
-        <el-button v-if="!on_edit&&$_has('GUIDERUPDATE')" type="danger" @click="changePassword=true">修改密码</el-button>
+        <el-button v-if="!on_edit" type="warning" @click="on_edit=true">修改导游信息</el-button>
+        <el-button v-if="!on_edit" type="danger" @click="changePassword=true">修改密码</el-button>
         <el-button v-if="on_edit" type="primary" @click="cancelSubmit">取消修改</el-button>
-        <el-button v-if="on_edit&&$_has('GUIDERUPDATE')" type="success" @click="submitForm('mform')">保存修改</el-button>
+        <el-button v-if="on_edit" type="success" @click="submitForm('mform')">保存修改</el-button>
       </el-form-item>
     </el-form>
 
@@ -116,10 +116,14 @@
         methods: {
             savePassword:function(id,password){
                 changeGuidePassword(id,password).then(res=>{
+                  if(res.re===1){
                     this.$message({
-                        type:'success',
-                        message:'修改密码成功'
-                    })
+                    type:'success',
+                    message:'修改密码成功'
+                  })
+                  }else{
+                    this.$message({type: 'error', message: res.data})
+                  }
                     this.changePassword=false
                 }).catch(error=>{
                     this.changePassword=false
@@ -134,22 +138,26 @@
             },
             getGuiderInfo: function () {
                 getGuiderInfo(this.$route.query.id).then(res => {
-                    this.guiderform=res
+                    this.guiderform=res.data
                 }).catch(error => {
 
                 })
             },
             getGuiderTypeList() {
                 getGuiderType().then(res => {
-                    this.guiderTypeList = res
+                    this.guiderTypeList = res.data
                 })
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         editGuider(this.guiderform).then(res => {
+                          if(res.re===1){
                             this.$message({type: 'success', message: '修改成功'})
                             this.on_edit=false;
+                          }else{
+                            this.$message({type: 'error', message: res.data})
+                          }
                         }).catch(error => {
                         })
                     } else {

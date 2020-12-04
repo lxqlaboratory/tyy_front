@@ -44,7 +44,7 @@
     </div>
 
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('GUIDERUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="addNewGuide">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addNewGuide">
         新增导游
       </el-button>
     </div>
@@ -118,7 +118,7 @@
           <el-button type="text" @click="guiderInfo(scope.row.id)">
             详情
           </el-button>
-          <el-button v-if="$_has('GUIDERUPDATE')" type="text" style="color: red" @click="deleteGuide(scope.row.id)">删除</el-button>
+          <el-button type="text" style="color: red" @click="deleteGuide(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -195,11 +195,15 @@
             deleteGuide: function (id) {
                 this.$confirm('删除操作不可撤销，是否继续', '警告', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delGuider(id).then(res => {
+                      if(res.re===1){
                         this.$message({
-                                type: 'success',
-                                message: '删除成功'
-                            }
+                            type: 'success',
+                            message: '删除成功'
+                          }
                         )
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
                         this.getList();
                     }).catch(error => {
                         this.getList();
@@ -208,13 +212,13 @@
             },
             getList: function () {
                 getGuiderList().then(res => {
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
                 })
             },
             getGuideTypeList: function () {
                 getGuiderType().then(res => {
-                    this.guiTypelist = res
+                    this.guiTypelist = res.data
                 }).catch(error => {
 
                 })

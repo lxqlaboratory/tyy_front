@@ -338,7 +338,7 @@
     </div>
 
     <el-table
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       fit
       highlight-current-row
@@ -366,17 +366,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="成团最低收客数" min-width="8">
-        <template slot-scope="scope">
-          {{ scope.row.minTouNum }}人
-        </template>
-      </el-table-column>
+      <!--<el-table-column align="center" label="成团最低收客数" min-width="8">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.minTouNum }}人-->
+        <!--</template>-->
+      <!--</el-table-column>-->
 
-      <!--      <el-table-column align="center" label="服务类别" min-width="10">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          {{scope.row.serType}}-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+            <el-table-column align="center" label="服务类别" min-width="10">
+              <template slot-scope="scope">
+                {{scope.row.serType}}
+              </template>
+            </el-table-column>
 
       <el-table-column align="center" label="行程天数" min-width="6">
         <template slot-scope="scope">
@@ -403,80 +403,90 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="出团计划" min-width="8">
-       <template slot-scope="scope">
-          <div v-if="scope.row.planTime">
+      <!--<el-table-column align="center" label="出团计划" min-width="8">-->
+       <!--<template slot-scope="scope">-->
+          <!--<div v-if="scope.row.planTime">-->
 
-            <el-button style="color: orangered" @click="toPlanList(scope.row.proNum,scope.row.planId)" type="text">      <span style="font-size: 13px;">最近: {{ scope.row.planTime }}</span>
-            </el-button>
-          </div>
-          <div>
-            <el-button  @click="toPlanList(scope.row.proNum)" type="text">全部计划</el-button>
-          </div>
-          <prolist-plan :pro-num="scope.row.proNum"></prolist-plan>
+            <!--<el-button style="color: orangered" @click="toPlanList(scope.row.proNum,scope.row.planId)" type="text">      <span style="font-size: 13px;">最近: {{ scope.row.planTime }}</span>-->
+            <!--</el-button>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<el-button  @click="toPlanList(scope.row.proNum)" type="text">全部计划</el-button>-->
+          <!--</div>-->
+          <!--<prolist-plan :pro-num="scope.row.proNum"></prolist-plan>-->
 
-        </template>
-      </el-table-column>
+        <!--</template>-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="操作" min-width="25">
         <template slot-scope="scope">
-          <el-button v-if ="$_has('PROUPDATE')" @click="editPro(scope.row.id)" size="mini" type="primary">产品编辑</el-button>
+          <el-button @click="editPro(scope.row.id)" size="mini" type="primary">产品编辑</el-button>
           <el-popover style="margin: 0 10px">
             <div>
               <div>
-                <el-button v-if ="$_has('PROUPDATE')" @click="copyProduct(scope.row.id,'sk')" size="mini" type="primary">
+                <el-button  @click="copyProduct(scope.row.id,'sk')" size="mini" type="primary">
                   复制为散客产品
                 </el-button>
               </div>
               <div style="margin-top: 5px;">
-                <el-button v-if ="$_has('PROUPDATE')" @click="copyProduct(scope.row.id,'td')" size="mini" type="success">
+                <el-button  @click="copyProduct(scope.row.id,'td')" size="mini" type="success">
                   复制为团队产品
                 </el-button>
               </div>
             </div>
-            <el-button v-if ="$_has('PROUPDATE')" size="mini" slot="reference" type="warning">产品复制
+            <el-button size="mini" slot="reference" type="warning">产品复制
             </el-button>
           </el-popover>
-          <el-button v-if ="$_has('PROUPDATE')" @click="delProduct(scope.row.id)" size="mini" type="danger">产品删除</el-button>
+          <el-button  @click="delProduct(scope.row.id)" size="mini" type="danger">产品删除</el-button>
 
           <br/>
           <div style="margin-top: 5px;">
 
-            <el-button v-if ="$_has('ORDERUPDATE')" @click="$router.push({name:'ProInfo',query:{id:scope.row.id}})" size="mini" type="success">
+            <el-button  @click="$router.push({name:'ProInfo',query:{id:scope.row.id}})" size="mini" type="success">
               录入订单
             </el-button>
 
-            <el-button v-if ="$_has('PLANUPDATE')" @click="proPlan(scope.row)" size="mini" type="primary">添加计划</el-button>
-            <el-button @click="exportTravel(scope.row.id)" size="mini" type="warning">导出行程</el-button>
+            <el-button @click="proPlan(scope.row.id)" size="mini" type="primary">添加计划</el-button><br/>
+            <el-button >
+              <a  :href="serverAddres+'/func/api/product/exportTravel?id='+scope.row.id"  :download="scope.row.fileName">下载行程</a>
+
+            </el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
 
     <el-pagination
-      :current-page.sync="queryForm.pageNum"
-      :page-size="queryForm.pageSize"
-      :total="total"
-      @current-change="getList"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[5, 10, 20, 40,100]"
+      :page-size="pageSize"
+      :total="list.length"
+      style="margin-top: 15px;"
       background
-      layout="prev, pager, next"
-      style="margin-top: 15px;"/>
+      layout="sizes, prev, pager, next"/>
   </div>
 </template>
 
 <script>
-  import {delProduct, getPros, getProTye, getSerTypes,getLocations,getProTicList} from "@/api/production"
+  import {exportTravel,delProduct, getPros, getProTye, getSerTypes,getLocations,getProTicList} from "@/api/production"
   import {addPlans} from "@/api/plan"
   import priceInput from '@/views/com/priceInput'
   import addNewLocation from "@/views/production/addNewLocation"
   import {addDisType, getDisType} from "@/api/distribute"
   import {distinct} from "@/utils/tools"
+  import axios from 'axios'
    import  prolistPlan from '@/views/com/prolistPlan'
 
   export default {
     name: "proList",
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 5,
+        aqq: 'http://localhost:8080/func/api/product/exportTravel?id=74',
         //出团日期快捷选项
         pickerOptions: {
 
@@ -506,7 +516,7 @@
         onload_addPlan: false,
         v_addPlan: false,
 
-
+        serverAddres:'',
         proTypeList: [],
         serTypeList: [],
 
@@ -573,8 +583,11 @@
       },
     },
     created() {
+      this.serverAddres = this.GLOBAL.servicePort
       if(this.$route.query.proNum){
+
         this.queryForm.proNum=this.$route.query.proNum
+        console.log("1:"+this.queryForm.proNum)
         this.autoOpenTimes=0
       }
 
@@ -584,14 +597,45 @@
         this.autoOpenTimes=0
       }
 
-
-
+      if (this.$route.params.productName) {
+        this.queryForm.name = this.$route.params.productName
+        console.log("aa")
+        this.autoOpenTimes=0
+      }
 
       this.queryForm.serType = 1
       this.initList()
       this.getList()
     },
     methods: {
+      // 每页多少条
+      downloadFile(fileName, data) {
+        if (!data) {
+          return;
+        }
+        let url = window.URL.createObjectURL(new Blob([data]));
+        let link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      xiaomeng(){
+
+
+        var iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = 'http://localhost:8080/func/api/product/exportTravel?id=74';
+        document.body.appendChild(iframe);
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       changeValue(e) {
         //locations是v-for里面的也是datas里面的值
         let obj = {};
@@ -634,10 +678,15 @@
         console.log("defalutPlanChargeStr"+this.planAddForm.defalutPlanChargeStr)
         console.log("disListStr"+this.planAddForm.disListStr)
         addPlans(this.planAddForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '增加新计划成功'
-          })
+
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '增加新计划成功'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
 
           this.onload_addPlan = false
           this.v_addPlan = false
@@ -649,13 +698,13 @@
           this.v_addPlan = false
         })
       },
-      proPlan(item) {
-        getProTicList(item.id).then(res => {
-          this.ticketTypeList = res
+      proPlan(id) {
+        getProTicList(id).then(res => {
+          this.ticketTypeList = res.data
         }).catch(error => {
         })
         //增加新计划
-        this.planAddForm.proId = item.id
+        this.planAddForm.proId = id
         this.planAddForm.disList = []
         this.planAddForm.saleState = true
         this.planAddForm.travelDate = ''
@@ -667,7 +716,7 @@
         this.v_addPlan = true
 
       },
-      editPro(id, proType) {
+      editPro(id) {
         //跳转到产品修改页
         this.$router.push({name: 'AddProduction', query: {id}})
       },
@@ -699,19 +748,19 @@
       initList() {
 
         getProTye().then(res => {
-          this.proTypeList = res
+          this.proTypeList = res.data
         }).catch(error => {
         })
         getSerTypes().then(res => {
-          this.serTypeList = res
+          this.serTypeList = res.data
         }).catch(error => {
         })
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
         }).catch(error => {
         })
         getDisType().then(res => {
-          this.disTypeList = res
+          this.disTypeList = res.data
           this.disTypeList.forEach(item => {
             this.$set(item, 'planCharge', [
               {
@@ -728,7 +777,7 @@
       },
       addLocationNew(location) {
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
           this.v_addLocation = false
         }).catch(error => {
         })
@@ -742,7 +791,6 @@
             this.planAddForm.disList.push(item)
           }
         })
-        console.log("aaaaaaa"+this.planAddForm.disList)
       },
       // selectedAll(disTypeItem) {
       //   this.disTypeList.filter(item => (item.type === disTypeItem)).forEach((info) => {
@@ -790,20 +838,28 @@
       getList() {
         this.onLoading = true
         getPros(this.queryForm).then(res => {
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
 
-          if(this.$route.query.action==='open'&&this.autoOpenTimes===0){
-            this.proPlan(this.list[0])
-            this.autoOpenTimes++
-          }
+          // if(this.$route.query.action==='open'&&this.autoOpenTimes===0){
+          //   this.proPlan(this.list[0].id)
+          //   this.autoOpenTimes++
+          // }
         }).catch(error => {
           this.onLoading = false
         })
       },
-      exportTravel(id) {
-        window.open(process.env.VUE_APP_PRINT_URL + 'export?id=' + id)
+      // exportTravel(id) {
+      //   window.open(process.env.VUE_APP_PRINT_URL + 'export?id=' + id)
+      // },
+      exportTravel(id){
+        console.log("aaa"+id)
+
+        exportTravel().then(res => {
+          console.log("aaa")
+          this.list = res.data
+        }).catch(error => {
+        })
       }
     }
   }

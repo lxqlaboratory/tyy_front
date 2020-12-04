@@ -73,10 +73,10 @@
     >
 
       <el-table-column align="center" label="团队编号" min-width="8">
-        <template slot-scope="scope">
-          {{ scope.row.groupNum }}
-        </template>
-      </el-table-column>
+      <template slot-scope="scope">
+        {{ scope.row.groupNum }}
+      </template>
+    </el-table-column>
 
       <el-table-column align="center" label="团队名称" min-width="8">
         <template slot-scope="scope">
@@ -86,19 +86,19 @@
 
       <el-table-column align="center" label="导游信息" min-width="8">
         <template slot-scope="scope">
-          {{ scope.row.guiderName }}
+          {{ scope.row.guiderTypeName }}-{{ scope.row.guiderName }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="车辆信息" min-width="8">
         <template slot-scope="scope">
-          {{ scope.row.carType }}
+          {{ scope.row.carTypeName }}-{{ scope.row.carName }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="团队状态" min-width="5">
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.state===1">已确认</el-tag>
+          <el-tag type="success" v-if="scope.row.groupState===1">已确认</el-tag>
           <el-tag type="warning" v-else>未确认</el-tag>
         </template>
       </el-table-column>
@@ -113,8 +113,8 @@
         <template slot-scope="scope">
           <!--<el-button  @click="cancelGroup(scope.row)" type="info" v-if="scope.row.state===1 && $_has('GROUPUPDATE')">取消确认</el-button>-->
           <!--<el-button @click="confirmGroup(scope.row)" type="success" v-if="scope.row.state===0 && $_has('GROUPUPDATE')">确认团队</el-button>-->
-          <el-button type="primary" @click="toPGroup(scope.row.groupId)">查看团队订单</el-button>
-          <el-button v-if="scope.row.state===0" type="success" @click="orderMultInG(scope.row.groupId)"  >入团</el-button>
+          <el-button type="primary" @click="toPGroup(scope.row.id)">查看团队订单</el-button>
+          <el-button v-if="scope.row.groupState===0" type="success" @click="orderMultInG(scope.row.id)"  >入团</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -150,29 +150,30 @@
 
     <!--</div>-->
     <el-table ref="multipleTable"
-              :data="orderList"
+              :data="orderList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
               tooltip-effect="dark"
               style="width: 100%;margin-top: 20px;"
               @selection-change="handleSelectionChange"
     >
       <el-table-column align="center" type="selection"></el-table-column>
-      <el-table-column label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
-      <el-table-column label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
-      <el-table-column label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
-      <el-table-column label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
-      <el-table-column label="出团日期" ><template slot-scope="scope">{{scope.row.groupDate.substring(0,10)}}</template></el-table-column>
-      <el-table-column label="下单用户"><template slot-scope="scope">{{scope.row.tourName}}</template></el-table-column>
-      <el-table-column label="操作" ><template slot-scope="scope"><el-button type="primary" @click="$router.push({name:'wechatorderList',params:{orderName:scope.row.orderName}})">查看详情</el-button></template></el-table-column>
+      <el-table-column align="center" label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
+      <el-table-column align="center" label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
+      <el-table-column align="center" label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
+      <el-table-column align="center" label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
+      <el-table-column align="center" label="出团日期" ><template slot-scope="scope">{{scope.row.travelDate}}</template></el-table-column>
+      <el-table-column align="center" label="操作员"><template slot-scope="scope">{{scope.row.workerName}}</template></el-table-column>
+      <el-table-column align="center" label="操作" ><template slot-scope="scope"><el-button type="primary" @click="$router.push({name:'wechatorderList',params:{orderName:scope.row.orderName}})">查看详情</el-button></template></el-table-column>
       <!--<el-table-column label="操作" ><template slot-scope="scope"><el-button type="primary"@click="addOrder(scope.row)">订单入团</el-button></template></el-table-column>-->
     </el-table>
 
     <el-pagination
-      :current-page.sync="queryForm.pageNum"
-      :page-size="queryForm.pageSize"
-      :total="total"
-      @current-change="getList"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[5, 10, 20, 40,100]"
+      :page-size="pageSize"
+      :total="orderList.length"
       background
-      layout="prev, pager, next"
+      layout="sizes, prev, pager, next"
       style="margin-top: 15px;"/>
 
     <!--<div class="g-title">拼团操作</div>-->
@@ -478,6 +479,10 @@
     components: {MessView},
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 5,
         initData: {
           guiderTypeList: [],
           guiderList: [],
@@ -625,21 +630,29 @@
     },
 
     methods: {
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       init(){
         getGuiderType().then(res => {
-          this.initData.guiderTypeList = res
+          this.initData.guiderTypeList = res.data
         }).catch(error => {
         })
         getGuiderList().then(res => {
-          this.initData.guiderList = res
+          this.initData.guiderList = res.data
         }).catch(error => {
         })
         getCarList().then(res => {
-          this.initData.carList = res
+          this.initData.carList = res.data
         }).catch((error => {
         }))
         getCarTypeList().then(res => {
-          this.initData.carTypeList = res
+          this.initData.carTypeList = res.data
         }).catch(error => {
         })
         this.onLoading = true
@@ -862,14 +875,14 @@
         let id = this.$route.query.id
         let proId = this.$route.query.proId
         getPlanGroups(id).then(res => {
-          this.groupList = res
+          this.groupList = res.data
 
         }).catch(error => {
           console.log(error)
         })
 
         getGroupFProOrder(proId).then(res => {
-          this.orderList = res
+          this.orderList = res.data
 
         }).catch(error => {
           console.log(error)

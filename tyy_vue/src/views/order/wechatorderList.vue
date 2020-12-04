@@ -51,7 +51,7 @@
                     v-model="groupAddForm.groupDes"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="onCreate" @click="onSubmit">立即创建</el-button>
+          <el-button type="primary"  @click="onSubmit">立即创建</el-button>
           <el-button @click="v_addGroup = false" >取消</el-button>
         </el-form-item>
       </el-form>
@@ -165,7 +165,7 @@
     </el-dialog>
 
     <el-table
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       highlight-current-row
       ref="mtable"
@@ -215,7 +215,7 @@
 
       <el-table-column v-if="listTitleFilter.travelDate" align="center" label="出团日期" width="150">
         <template slot-scope="scope">
-          {{ scope.row.travelDate.substr(0,10) }}
+          {{ scope.row.travelDate }}
         </template>
       </el-table-column>
 
@@ -272,25 +272,16 @@
     <div style="display: flex;align-items: center;margin-top: 15px;">
 
       <el-pagination
-        :current-page.sync="queryForm.pageNum"
-        :page-size="queryForm.pageSize"
-        :total="total"
-        @current-change="getList"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[5, 10, 20, 40,100]"
+        :page-size="pageSize"
+        :total="list.length"
+        style="margin-top: 15px;"
         background
-        layout="prev, pager, next"
-      />
-      <div>
-        <el-select :value="queryForm.pageSize" @change="getList" style="margin-left:  5px;"
-                   v-model="queryForm.pageSize">
-          <el-option :value="10" label="10条/页"></el-option>
-          <el-option :value="20" label="20条/页"></el-option>
-          <el-option :value="30" label="30条/页"></el-option>
-          <el-option :value="40" label="40条/页"></el-option>
-          <el-option :value="50" label="50条/页"></el-option>
-          <el-option :value="100" label="100条/页"></el-option>
-          <el-option :value="500" label="500条/页"></el-option>
-        </el-select>
+        layout="sizes, prev, pager, next"/>
 
+      <div>
         <el-button @click="export2Excel('xlsx')" icon="el-icon-document" style="margin-left: 15px" type="primary">
           导出选中条目(Excel)
         </el-button>
@@ -298,7 +289,6 @@
         <el-button @click="export2Excel('csv')" icon="el-icon-document" style="margin-left: 15px" type="success">
           导出选中条目(Csv)
         </el-button>
-
       </div>
 
     </div>
@@ -325,6 +315,10 @@
     name: "wechatorderList",
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 10,
         initData: {
           guiderTypeList: [],
           guiderList: [],
@@ -537,6 +531,14 @@
       }
     },
     methods: {
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       toGro() {
         this.v_addGroup = true
       },
@@ -635,7 +637,7 @@
 
       openAddTou(id) {
         getNewTouList(id).then(res => {
-          this.tourList = res
+          this.tourList = res.data
           this.total = res.pagination.total
           this.onLoading = false
         }).catch(error => {
@@ -666,8 +668,7 @@
       getList() {
         this.onLoading = true
         getWeChatOrders(this.queryForm).then(res => {
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
@@ -676,31 +677,31 @@
 
       initQueryList() {
         getProTye().then(res => {
-          this.initList.proTypeList = res
+          this.initList.proTypeList = res.data
         }).catch(error => {
         })
         getSerTypes().then(res => {
-          this.initList.serTypeList = res
+          this.initList.serTypeList = res.data
         }).catch(error => {
         })
         getDisType().then(res => {
-          this.initList.disTypeList = res
+          this.initList.disTypeList = res.data
         }).catch(error => {
         })
         getGuiderType().then(res => {
-          this.initData.guiderTypeList = res
+          this.initData.guiderTypeList = res.data
         }).catch(error => {
         })
         getGuiderList().then(res => {
-          this.initData.guiderList = res
+          this.initData.guiderList = res.data
         }).catch(error => {
         })
         getCarList().then(res => {
-          this.initData.carList = res
+          this.initData.carList = res.data
         }).catch((error => {
         }))
         getCarTypeList().then(res => {
-          this.initData.carTypeList = res
+          this.initData.carTypeList = res.data
         }).catch(error => {
         })
         this.onLoading = true

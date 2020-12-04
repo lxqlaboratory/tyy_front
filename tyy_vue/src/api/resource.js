@@ -30,6 +30,14 @@ export function getResourceList(queryForm) {
     data:{...queryForm}
   })
 }
+export function getResourceListPage(queryForm) {
+  return request({
+    url:'/api/resource/getResourceListPage',
+    method:'post',
+    data:{...queryForm}
+  })
+}
+
 
 export function getResByNames(data) {
   return request({

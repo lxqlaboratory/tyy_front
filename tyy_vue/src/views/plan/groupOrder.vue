@@ -12,13 +12,13 @@
     <!--</el-table>-->
     <div class="g-title">已选订单</div>
     <el-table ref="multipleTable" :data="inGroupList" tooltip-effect="dark" style="width: 100%">
-      <el-table-column label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
-      <el-table-column label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
-      <el-table-column label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
-      <el-table-column label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
-      <el-table-column label="出团日期" ><template slot-scope="scope">{{scope.row.groupDate.substring(0,10)}}</template></el-table-column>
-      <el-table-column label="下单用户"><template slot-scope="scope">{{scope.row.tourName}}</template></el-table-column>
-     <el-table-column label="操作" ><template slot-scope="scope"><el-button type="danger"@click="delOrder(scope.row)">订单出团</el-button></template></el-table-column>
+      <el-table-column align="center" label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
+      <el-table-column align="center" label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
+      <el-table-column align="center" label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
+      <el-table-column align="center" min-width="50px" label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
+      <el-table-column align="center" label="出团日期" ><template slot-scope="scope">{{scope.row.travelDate}}</template></el-table-column>
+      <el-table-column align="center" label="操作员"><template slot-scope="scope">{{scope.row.workerName}}</template></el-table-column>
+      <el-table-column align="center" label="操作" ><template slot-scope="scope"><el-button type="danger"@click="delOrder(scope.row)">订单出团</el-button></template></el-table-column>
     </el-table>
   </div>
 
@@ -113,7 +113,7 @@
             // })
 
             getGroupSOrder(groupId).then(res => {
-              this.inGroupList = res
+              this.inGroupList = res.data
             }).catch(error => {
               console.log(error)
             })

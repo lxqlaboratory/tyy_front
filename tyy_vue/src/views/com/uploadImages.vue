@@ -49,7 +49,7 @@
                   if (val) {
 
                       getResList(JSON.parse(this.value)).then(res => {
-                          this.fileList = res;
+                          this.fileList = res.data;
                           console.log(res)
                       }).catch(error => {
 

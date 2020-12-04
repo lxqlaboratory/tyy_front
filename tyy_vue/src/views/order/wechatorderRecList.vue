@@ -102,7 +102,7 @@
     </el-dialog>
 
     <el-table
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       highlight-current-row
       ref="mtable"
@@ -206,25 +206,15 @@
     <div style="display: flex;align-items: center;margin-top: 15px;">
 
       <el-pagination
-        :current-page.sync="queryForm.pageNum"
-        :page-size="queryForm.pageSize"
-        :total="total"
-        @current-change="getList"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[5, 10, 20, 40,100]"
+        :page-size="pageSize"
+        :total="list.length"
+        style="margin-top: 15px;"
         background
-        layout="prev, pager, next"
-      />
+        layout="sizes, prev, pager, next"/>
       <div>
-        <el-select :value="queryForm.pageSize" @change="getList" style="margin-left:  5px;"
-                   v-model="queryForm.pageSize">
-          <el-option :value="10" label="10条/页"></el-option>
-          <el-option :value="20" label="20条/页"></el-option>
-          <el-option :value="30" label="30条/页"></el-option>
-          <el-option :value="40" label="40条/页"></el-option>
-          <el-option :value="50" label="50条/页"></el-option>
-          <el-option :value="100" label="100条/页"></el-option>
-          <el-option :value="500" label="500条/页"></el-option>
-        </el-select>
-
         <el-button @click="export2Excel('xlsx')" icon="el-icon-document" style="margin-left: 15px" type="primary">
           导出选中条目(Excel)
         </el-button>
@@ -258,6 +248,10 @@
     name: "wechatorderList",
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 10,
         listTitleFilter:{
           orderNum:true,
           location:true,
@@ -451,15 +445,31 @@
       }
     },
     methods: {
-
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       resOrder(id) {
-        restoreRecOrders(id).then(res => {
-          this.$message({
-            type: 'success',
-            message: '订单还原成功！'
+        this.$confirm('确认还原订单？是否继续', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          restoreRecOrders(id).then(res => {
+            if(res.re===1){
+              this.$message({
+                type: 'success',
+                message: '订单还原成功！'
+              })
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
+            this.getList()
+          }).catch(error => {
           })
-          this.getList()
-        }).catch(error => {
         })
       },
       //将用户个人选项写回前端缓存
@@ -516,9 +526,7 @@
 
       openAddTou(id) {
         getNewTouList(id).then(res => {
-          this.tourList = res
-          console.log("jjjj"+res)
-          this.total = res.pagination.total
+          this.tourList = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
@@ -548,9 +556,7 @@
       getList() {
         this.onLoading = true
         getRecycleWeChatOrders(this.queryForm).then(res => {
-          console.log(res.list)
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false

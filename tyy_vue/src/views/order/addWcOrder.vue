@@ -45,14 +45,14 @@
         </el-col>
         <el-col :span="8">
           <label>产品分类:</label>
-          <span>{{orderInfo.proTypeName}}</span>
+          <span>{{orderInfo.proType}}</span>
         </el-col>
       </el-row>
 
       <el-row :gutter="20">
         <el-col :span="8">
           <label>计划日期:</label>
-          <span>{{orderInfo.travelDate?orderInfo.travelDate.substr(0,10):''}}</span>
+          <span>{{orderInfo.travelDate}}</span>
         </el-col>
         <el-col :span="8">
           <label>行程天数:</label>
@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="8">
           <label>计划人数:</label>
-          <span>{{orderInfo.planTouNum}}人</span>
+          <span>{{orderInfo.plan.numLimit}}人</span>
         </el-col>
       </el-row>
     </div>
@@ -129,14 +129,26 @@
             </template>
           </el-table-column>
         </el-table>
-
+      <div style="display: flex;align-items: center;justify-content: flex-start">
         <el-pagination
           :current-page.sync="query.currentPage"
           :page-size="query.pageSize"
           :total="list.length"
           background
+          v-loading="onLoading"
           layout="prev, pager, next"
           style="margin-top: 15px;"/>
+
+        <el-select style="margin-left:  5px;" v-model="query.pageSize">
+          <el-option :value="10" label="10条/页"></el-option>
+          <el-option :value="30" label="30条/页"></el-option>
+          <el-option :value="50" label="50条/页"></el-option>
+        </el-select>
+
+
+        <el-button @click="export2Excel" icon="el-icon-document" style="margin-left: 15px" type="primary">导出游客列表
+        </el-button>
+      </div>
     </div>
 
     <div>
@@ -281,26 +293,7 @@
         </el-col>
       </el-row>
 
-      <div style="display: flex;align-items: center;justify-content: flex-start">
-        <el-pagination
-          :current-page.sync="query.currentPage"
-          :page-size="query.pageSize"
-          :total="touristList.length"
-          background
-          v-loading="onLoading"
-          layout="prev, pager, next"
-          style="margin-top: 15px;"/>
 
-        <el-select style="margin-left:  5px;" v-model="query.pageSize">
-          <el-option :value="10" label="10条/页"></el-option>
-          <el-option :value="30" label="30条/页"></el-option>
-          <el-option :value="50" label="50条/页"></el-option>
-        </el-select>
-
-
-        <el-button @click="export2Excel" icon="el-icon-document" style="margin-left: 15px" type="primary">导出游客列表
-        </el-button>
-      </div>
 
 
 
@@ -455,13 +448,18 @@
       parserTourist() {
         this.onLoading = true
         getTourist(this.textTourist, this.orderid).then(res => {
-          this.$message({
-            type: "success",
-            message: "解析成功",
-            showClose: true,
-          })
-          this.touristList = res
-          this.orderForm.touListStr = JSON.stringify(this.orderForm.touList)
+          if(res.re===1){
+            this.$message({
+              type: "success",
+              message: "解析成功",
+              showClose: true,
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+          this.touristList = res.data
+          this.orderForm.touListStr = JSON.stringify(this.touristList)
+          console.log("aaa"+JSON.stringify(this.touristList))
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
@@ -471,10 +469,9 @@
       getList() {
         this.onLoading = true
         showDisList(this.orderForm).then(res => {
-          this.disList = res.WechatUnitList
-          this.orderForm.positionCodeA = res.positionCodeA
-          this.orderForm.workerId = res.workerId
-          this.total = res.pagination.total
+          this.disList = res.data.WechatUnitList
+          this.orderForm.positionCodeA = res.data.positionCodeA
+          this.orderForm.workerId = res.data.workerId
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
@@ -489,11 +486,11 @@
       },
       selectDisBu: function (item) {
         getDisCode(item.unitId).then(res =>{
-          this.orderForm.positionCodeB = res.positionCodeB
-          this.orderForm.positionCodeC = res.positionCodeC
-          this.orderForm.secondDisId = res.disId
-          this.orderForm.disId = res.disId
-          this.orderForm.unitId = res.unitId
+          this.orderForm.positionCodeB = res.data.positionCodeB
+          this.orderForm.positionCodeC = res.data.positionCodeC
+          this.orderForm.secondDisId = res.data.disId
+          this.orderForm.disId = res.data.disId
+          this.orderForm.unitId = res.data.unitId
         }).then(() => {
         })
 
@@ -550,6 +547,12 @@
           result = false
           message += "分销商未选择；"
         }
+        //检查游客是否解析
+        if (!this.touristList|| this.touristList <= 0) {
+          result = false
+          message += "游客信息未解析；"
+        }
+
 
         this.orderForm.code=this.orderForm.positionCodeA+this.orderForm.positionCodeB+this.orderForm.positionCodeC+""
         this.orderForm.orderName = this.orderForm.positionCodeD+this.orderForm.code
@@ -573,13 +576,18 @@
         if (result)
           addWcOrder(this.orderForm).then(res => {
             console.log(res)
-            this.$message({
-              type: "success",
-              message: '保存成功'
-            })
+            if(res.re===1){
+              this.$message({
+                type: "success",
+                message: '保存成功'
+              })
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
+
             this.v_getPrice = true
-            this.priceList = res.tourList
-            this.totalPrice = res.totalPrice
+            this.priceList = res.data.tourList
+            this.totalPrice = res.data.totalPrice
           }).catch()
         else
           this.$message({
@@ -598,16 +606,16 @@
         })
         //初始化页面
         getOrderDetail(this.$route.query.planId).then(res => {
-          this.orderInfo = res
-          getProTicList(res.disId).then(res => {
-            this.ticketTypeList = res
+          this.orderInfo = res.data
+          getProTicList(res.data.proId).then(res => {
+            this.ticketTypeList = res.data
           }).catch(error => {
           })
-          this.locationList = JSON.parse(res.locationList)
-          this.orderForm.date = res.travelDate
-          this.orderForm.positionCodeD = "D"+res.disId
-          this.orderForm.productId = res.disId
-          this.orderForm.proName = res.proName
+          this.locationList = JSON.parse(res.data.locationList)
+          this.orderForm.date = res.data.travelDate
+          this.orderForm.positionCodeD = "D"+res.data.proId
+          this.orderForm.productId = res.data.proId
+          this.orderForm.proName = res.data.proName
             let tempArr = JSON.parse(this.orderInfo.proPlanCharge)
             tempArr.forEach(item => {
 
@@ -615,7 +623,7 @@
               item.realPrice = item.retPrice
             })
             this.planChargeList = tempArr
-            this.orderForm.disId = res.disId
+            // this.orderForm.disId = res.disId
 
 
 

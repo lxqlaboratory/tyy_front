@@ -138,7 +138,7 @@
     </div>
 
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('SUPUPDATE')" @click="addNewSup" icon="el-icon-circle-plus-outline" type="primary">
+      <el-button @click="addNewSup" icon="el-icon-circle-plus-outline" type="primary">
         新增供应商
       </el-button>
     </div>
@@ -181,7 +181,7 @@
           <el-button @click="v_disInfo=true;supInfoForm=list.find(item=>(item.id===scope.row.id))" type="text">详情
           </el-button>
           <el-button type="text">账目</el-button>
-          <el-button v-if="$_has('SUPUPDATE')" @click="deleteDis(scope.row.id)" style="color: red" type="text">删除</el-button>
+          <el-button @click="deleteDis(scope.row.id)" style="color: red" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -281,22 +281,26 @@
             },
             getList: function () {
                 getSupInfo().then(res => {
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
                 })
             },
             getTypeList: function () {
                 getSupType().then(res => {
-                    this.supTypeList = res
+                    this.supTypeList = res.data
                 }).catch(error => {
                 })
             },
             updateSupInfo: function () {
                 editSupInfo(this.supInfoForm).then(res => {
+                  if(res.re===1){
                     this.$message({
-                        type: 'success',
-                        message: '保存成功'
+                      type: 'success',
+                      message: '保存成功'
                     })
+                  }else{
+                    this.$message({type: 'error', message: res.data})
+                  }
                     this.getList();
                     this.v_disInfo = false
                 }).catch(error => {
@@ -305,12 +309,17 @@
             deleteDis: function (id) {
                 this.$confirm('删除操作不可撤销，是否继续', '警告', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
                     delSupInfo(id).then(res => {
+                      if(res.re===1){
                         this.$message({
-                                type: 'success',
-                                message: '删除成功'
-                            }
+                            type: 'success',
+                            message: '删除成功'
+                          }
                         )
-                        this.getList();
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
+
+                      this.getList();
                     }).catch(error => {
                         this.getList();
                     })

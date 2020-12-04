@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('GUIDERTYPEUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="v_addGuideType=true;guideTypeAddForm={};">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="v_addGuideType=true;guideTypeAddForm={};">
         新增导游类型
       </el-button>
     </div>
@@ -72,8 +72,8 @@
       </el-table-column>
       <el-table-column min-width="150" align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="$_has('GUIDERTYPEUPDATE')" type="primary" size="small" icon="el-icon-edit" @click="v_editGuideType=true;guideTypeEditForm=list.find(item=>(item.id===scope.row.id))">编辑</el-button>
-          <el-button v-if="$_has('GUIDERTYPEUPDATE')" type="danger" size="small" icon="el-icon-delete" @click="deleteGuideType(scope.row.id)">删除
+          <el-button type="primary" size="small" icon="el-icon-edit" @click="v_editGuideType=true;guideTypeEditForm=list.find(item=>(item.id===scope.row.id))">编辑</el-button>
+          <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteGuideType(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -111,7 +111,7 @@
         methods: {
             getList:function(){
                 getGuiderType().then(res => {
-                    this.list = res
+                    this.list = res.data
                 }).catch(error => {
 
                 })
@@ -119,10 +119,15 @@
             addNewGuide: function () {
                 this.isOnAdd=true;
                 addGuiderType(this.guideTypeAddForm).then(res => {
+                  if(res.re===1){
                     this.$message({
-                        type:'success',
-                        message:'添加成功'
+                      type:'success',
+                      message:'添加成功'
                     })
+                  }else{
+                    this.$message({type: 'error', message: res.data})
+                  }
+
                     this.isOnAdd=false;
                     this.v_addGuideType=false;
                     this.getList();
@@ -132,10 +137,14 @@
             },
             ediDisType:function(){
                 editGuiderType(this.guideTypeEditForm).then(res=>{
+                  if(res.re===1){
                     this.$message({
-                        type:'success',
-                        message:'保存成功'
+                      type:'success',
+                      message:'保存成功'
                     })
+                  }else{
+                    this.$message({type: 'error', message: res.data})
+                  }
                     this.v_editGuideType=false
                     this.getList()
                 }).catch(error=>{
@@ -147,10 +156,15 @@
                 this.$confirm('此操作不可撤销，是否继续？','提示',{confirmButtonText:'确定',cancelButtonText:'取消'}).then(()=>{
                     delGuiderType(id).then(res => {
                         this.getList();
+                      if(res.re===1){
                         this.$message({
-                            type:'success',
-                            message:'删除成功'
+                          type:'success',
+                          message:'删除成功'
                         })
+                      }else{
+                        this.$message({type: 'error', message: res.data})
+                      }
+
                     }).catch(error => {
                         this.getList();
                     })

@@ -58,8 +58,7 @@
 
 
 
-    <el-button v-if ="$_has('ORDERUPDATE')" :type="orderState===1?'primary':'primary'"
-               @click="getData()" icon="el-icon-edit" size="mini">处理</el-button>
+    <el-button type="primary" @click="getData()" icon="el-icon-edit" size="mini">处理</el-button>
     <el-button @click="printOrder" icon="el-icon-printer" size="mini">打印</el-button>
 
     <el-dialog :close-on-click-modal="false" :visible.sync="visOrderInfo" @close="closeOrder" append-to-body
@@ -195,7 +194,7 @@
         </div>
         <div class="infoItem">
           <label>出团日期:</label>
-          <span v-if="orderForm.travelDate">{{orderForm.travelDate.substr(0,10)}}</span>
+          <span v-if="orderForm.travelDate">{{orderForm.travelDate}}</span>
           <span v-else></span>
         </div>
         <div class="infoItem">
@@ -763,7 +762,7 @@
           this.v_addTour = false
           this.visOrderInfo = false
           this.getData()
-          this.touristList = res
+          this.touristList = res.data
           this.textTourist = ''
           this.onLoading = false
         }).catch(error => {
@@ -781,10 +780,15 @@
       save() {
         this.editForm.orderId = this.orderId
         editTouInfo(this.editForm).then(res => {
-          this.$message({
+          if(res.re===1){
+            this.$message({
             type: "success",
             message: '修改成功！'
           })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           this.v_editTou = false
           this.getData()
 
@@ -853,10 +857,16 @@
         this.onAddMoney = true
         this.moneyAddForm.orderId = this.orderId
         addMoney(this.moneyAddForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '录入账单成功'
-          })
+
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '录入账单成功'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           this.onAddMoney = false
           // this.getData()
           this.resetForm('moneyAddForm')
@@ -918,10 +928,11 @@
           cancelButtonText: '取消'
         }).then(() => {
           deleteOrder(id).then(res => {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            })
+            if(res.re===1){
+              this.$message({type: 'success', message: '删除成功'})
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
             this.visOrderInfo = false
             // this.getData()
           }).catch(error => {
@@ -940,10 +951,15 @@
       editOrder() {
         //筛选出editForm
         editOrder(this.orderForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '保存订单信息成功!'
-          })
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '保存订单信息成功!'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           // this.getData()
         }).catch(error => {
         })
@@ -959,7 +975,7 @@
       },
       getData() {
         getCerTypes({type: 'CERTYPE'}).then(res => {
-          this.cerTypeList = res
+          this.cerTypeList = res.data
         }).catch(error => {
         })
         // Promise.all([getPayType(), getOrderDisMoneyList(this.orderId), getOrderHisList(this.orderId)]).then(res => {
@@ -972,29 +988,28 @@
         //
         this.visOrderInfo = true
         getWechatOrderDetail(this.orderId).then(res => {
-            this.orderForm = res
-            this.planId = res.planId
+            this.orderForm = res.data
+            this.planId = res.data.planId
             this.editOrderForm.orderId = this.orderId
             // this.editOrderForm.location = this.orderForm.location
 
             getNewTouList(this.orderId).then(res => {
-              this.tourList = res
-              this.total = res.pagination.total
+              this.tourList = res.data
               this.onLoading = false
             }).catch(error => {
               this.onLoading = false
             })
 
             getNewTouMoneyList(this.orderId).then(res => {
-              this.tourMoneyList = res
+              this.tourMoneyList = res.data
               // this.total = res.pagination.total
-              // this.onLoading = false
+              this.onLoading = false
             }).catch(error => {
-              // this.onLoading = false
+              this.onLoading = false
             })
 
           getOrderDetail(this.planId).then(res => {
-            this.locationList = JSON.parse(res.locationList)
+            this.locationList = JSON.parse(res.data.locationList)
           }).catch(error => {
 
           })

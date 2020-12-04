@@ -2,14 +2,6 @@
   <div class="app-container">
     <div class="filter-container">
       <div class="filter-item">
-        <label>证件类型</label>
-        <el-select :value="queryForm.cerType" clearable placeholder="请选择证件类型" ref="resType"
-                   style="width: 300px;" v-model="queryForm.resType">
-          <el-option :key="item.code" :label="item.description" :value="item.code"
-                     v-for="item in cerTypeList"></el-option>
-        </el-select>
-      </div>
-      <div class="filter-item">
         <label>证件号码</label>
         <el-input maxlength="50" placeholder="请检索证件号码" style="margin-left: 15px; width: 300px"
                   v-model="queryForm.cerNum"></el-input>
@@ -27,37 +19,6 @@
                   v-model="queryForm.name"></el-input>
 
       </div>
-      <div class="filter-item">
-        <label>订单编号</label>
-        <el-input maxlength="50" placeholder="请检索订单编号" style="margin-left: 15px; width: 300px"
-                  v-model="queryForm.orderNum"></el-input>
-      </div>
-
-      <div class="filter-item">
-        <label>产品名</label>
-        <el-input maxlength="50" placeholder="请检索产品名" style="margin-left: 15px; width: 300px"
-                  v-model="queryForm.proName"></el-input>
-      </div>
-
-      <div class="filter-item">
-        <label>产品编号</label>
-        <el-input maxlength="50" placeholder="请检索产品编号" style="margin-left: 15px; width: 300px"
-                  v-model="queryForm.proNum"></el-input>
-      </div>
-
-      <div class="filter-item">
-        <label>团队编号</label>
-        <el-input maxlength="50" placeholder="请检索产品编号" style="margin-left: 15px; width: 300px"
-                  v-model="queryForm.groupNum"></el-input>
-      </div>
-
-
-      <div class="filter-item">
-        <label>团队名</label>
-        <el-input maxlength="50" placeholder="请检索产品编号" style="margin-left: 15px; width: 300px"
-                  v-model="queryForm.groupName"></el-input>
-      </div>
-
 
       <div class="filter-item">
         <el-button @click="getList" icon="el-icon-search" type="primary">查询</el-button>
@@ -65,7 +26,7 @@
     </div>
 
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('TOUUPDATE')" @click="addNewTourist()" icon="el-icon-circle-plus-outline" type="primary">
+      <el-button @click="addNewTourist()" icon="el-icon-circle-plus-outline" type="primary">
         新增游客
       </el-button>
     </div>
@@ -79,7 +40,7 @@
       style="margin-top: 15px;"
       v-loading="onLoading"
     >
-      <el-table-column align="center" label="游客编号" min-width="45">
+      <el-table-column width="100px" align="center" label="游客编号" min-width="45">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
@@ -97,7 +58,7 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="性别" min-width="45">
+      <el-table-column width="120px"  align="center" label="性别" min-width="45">
         <template slot-scope="scope">
           <el-tag type="success" v-if="scope.row.sex===1">男</el-tag>
           <el-tag type="warning" v-if="scope.row.sex===0">女</el-tag>
@@ -118,17 +79,17 @@
       <el-table-column align="center" label="操作" min-width="45">
         <template slot-scope="scope">
           <div>
-            <el-button v-if="$_has('TOUUPDATE')" @click="addNewTourist(scope.row.id)" size="mini" type="primary">修改游客</el-button>
+            <el-button @click="addNewTourist(scope.row.id)" size="mini" type="primary">修改游客</el-button>
             <el-button @click="" size="mini" type="success">发送短信</el-button>
           </div>
           <div style="margin-top: 5px">
-            <el-button v-if="$_has('TOUUPDATE')" @click="delTourist(scope.row.id)" plain size="mini" type="danger">删除游客</el-button>
-            <el-button  @click="eidtIsBlack(scope.row.id,1)" size="mini" type="danger" v-if="scope.row.isBlack===0&&$_has('TOUUPDATE')">
-              加入黑名单
-            </el-button>
-            <el-button @click="eidtIsBlack(scope.row.id,0)" size="mini" type="warning" v-if="scope.row.isBlack===1&&$_has('TOUUPDATE')">
-              移除黑名单
-            </el-button>
+            <el-button @click="delTourist(scope.row.id)" plain size="mini" type="danger">删除游客</el-button>
+            <!--<el-button  @click="eidtIsBlack(scope.row.id,1)" size="mini" type="danger" v-if="scope.row.isBlack===0">-->
+              <!--加入黑名单-->
+            <!--</el-button>-->
+            <!--<el-button @click="eidtIsBlack(scope.row.id,0)" size="mini" type="warning" v-if="scope.row.isBlack===1">-->
+              <!--移除黑名单-->
+            <!--</el-button>-->
 
           </div>
         </template>
@@ -196,10 +157,14 @@
           cancelButtonText: '取消'
         }).then(() => {
           delTourist(id).then(res => {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            })
+            if(res.re===1){
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
             this.getList()
           }).catch(error => {
             this.getList()
@@ -221,13 +186,12 @@
       },
       getCerTypes() {
         getCerTypes(this.cerTypeForm).then(res => {
-          this.cerTypeList = res
+          this.cerTypeList = res.data
         })
       },
       getList() {
         getTouristList(this.queryForm).then(res => {
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false

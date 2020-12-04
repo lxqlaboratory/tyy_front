@@ -13,7 +13,7 @@
       </div>
       <div class="infoItem">
         <label>出团日期:</label>
-        <span>{{groupInfo.groupDate}}</span>
+        <span>{{groupInfo.travelDate}}</span>
       </div>
       <!--<div class="infoItem">-->
         <!--<label>订单数:</label>-->
@@ -40,83 +40,153 @@
 
     <div class="g-title">已拼团订单</div>
     <el-table ref="multipleTable" :data="inGroupList" tooltip-effect="dark" style="width: 100%">
-      <el-table-column label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
-      <el-table-column label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
-      <el-table-column label="计划编号" ><template slot-scope="scope">{{scope.row.planId}}</template></el-table-column>
-      <el-table-column label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
-      <el-table-column label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
-      <el-table-column label="出团日期" ><template slot-scope="scope">{{scope.row.groupDate.substring(0,10)}}</template></el-table-column>
-      <el-table-column label="下单用户"><template slot-scope="scope">{{scope.row.tourName}}</template></el-table-column>
-      <el-table-column v-if="this.groupState===0" label="操作" ><template slot-scope="scope"><el-button type="danger" @click="delOrder(scope.row)">订单出团</el-button></template></el-table-column>
+      <el-table-column align="center" label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
+      <el-table-column align="center" label="产品名称" ><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
+      <el-table-column align="center" label="计划编号" ><template slot-scope="scope">{{scope.row.planId}}</template></el-table-column>
+      <el-table-column align="center" label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
+      <el-table-column align="center" label="游客人数" ><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
+      <el-table-column align="center" label="出团日期" ><template slot-scope="scope">{{scope.row.travelDate}}</template></el-table-column>
+      <el-table-column align="center" label="操作员"><template slot-scope="scope">{{scope.row.workerName}}</template></el-table-column>
+      <el-table-column align="center" v-if="this.groupState===0" label="操作" ><template slot-scope="scope"><el-button type="danger" @click="delOrder(scope.row)">订单出团</el-button></template></el-table-column>
     </el-table>
 
-    <div class="g-title">拼团操作</div>
+    <div v-if="this.groupInfo.touList.length!=0" class="g-title">拼团操作</div>
+    <el-tabs type="border-card">
+      <el-tab-pane label="订单拼团">
+        <el-row align="middle" type="flex">
+          <el-col :span="16" class="filter-container">
+            <div class="filter-item">
+              <label>订单编号</label>
+              <el-input v-model="queryForm.orderName"></el-input>
+            </div>
 
-    <el-row align="middle" type="flex">
-      <el-col :span="16" class="filter-container">
-        <div class="filter-item">
-          <label>订单编号</label>
-          <el-input v-model="queryForm.orderName"></el-input>
-        </div>
+            <div class="filter-item">
+              <label>集合地点</label>
+              <el-input v-model="queryForm.location"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <el-button @click="getList" icon="el-icon-search" style="width: 180px" type="primary">查询</el-button>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
 
-        <div class="filter-item">
-          <label>集合地点</label>
-          <el-input v-model="queryForm.location"></el-input>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <el-button @click="getList" icon="el-icon-search" style="width: 180px" type="primary">查询</el-button>
-      </el-col>
-    </el-row>
-    <el-divider></el-divider>
-
-
-    <el-table
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      stripe
-      style="margin-top: 15px;"
-      v-loading="onLoading">
-      <el-table-column label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
-      <el-table-column label="产品名称"><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
-      <el-table-column label="计划编号" ><template slot-scope="scope">{{scope.row.planId}}</template></el-table-column>
-      <el-table-column label="出团日期" ><template slot-scope="scope">{{scope.row.travelDate.substring(0,10)}}</template></el-table-column>
-      <el-table-column label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
-      <el-table-column label="游客人数" width="100px"><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
-      <el-table-column align="center" label="订单状态" width="150">
-        <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.groupId===0">未拼团</el-tag>
-          <el-tag type="warning" v-else>已拼团</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column  v-if="this.groupState===0" label="操作" ><template slot-scope="scope"><el-button type="primary" @click="addOrder(scope.row)">订单入团</el-button></template></el-table-column>
-    </el-table>
-    <div style="display: flex;align-items: center;margin-top: 15px;">
-
-      <el-pagination
-        :current-page.sync="queryForm.pageNum"
-        :page-size="queryForm.pageSize"
-        :total="total"
-        @current-change="getList"
-        background
-        layout="prev, pager, next"
-      />
-      <div>
-        <el-select :value="queryForm.pageSize" @change="getList" style="margin-left:  5px;"
-                   v-model="queryForm.pageSize">
-          <el-option :value="10" label="10条/页"></el-option>
-          <el-option :value="20" label="20条/页"></el-option>
-          <el-option :value="30" label="30条/页"></el-option>
-          <el-option :value="40" label="40条/页"></el-option>
-          <el-option :value="50" label="50条/页"></el-option>
-          <el-option :value="100" label="100条/页"></el-option>
-          <el-option :value="500" label="500条/页"></el-option>
-        </el-select>
-      </div>
+        <el-table
+          :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+          border
+          fit
+          highlight-current-row
+          stripe
+          style="margin-top: 15px;"
+          v-loading="onLoading">
+          <el-table-column align="center" label="订单编号" ><template slot-scope="scope">{{scope.row.orderName}}</template></el-table-column>
+          <el-table-column align="center" label="产品名称"><template slot-scope="scope">{{scope.row.productName}}</template></el-table-column>
+          <el-table-column align="center" label="计划编号" ><template slot-scope="scope">{{scope.row.planId}}</template></el-table-column>
+          <el-table-column align="center" label="出团日期" ><template slot-scope="scope">{{scope.row.travelDate.substring(0,10)}}</template></el-table-column>
+          <el-table-column align="center" label="集合地点"><template slot-scope="scope">{{scope.row.location}}</template></el-table-column>
+          <el-table-column align="center" label="游客人数" width="100px"><template slot-scope="scope">{{scope.row.tourNum}}</template></el-table-column>
+          <el-table-column align="center" label="订单状态" width="150">
+            <template slot-scope="scope">
+              <el-tag type="success" v-if="scope.row.groupId===0">未拼团</el-tag>
+              <el-tag type="warning" v-else>已拼团</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" v-if="this.groupState===0" label="操作" ><template slot-scope="scope"><el-button type="primary" @click="addOrder(scope.row)">订单入团</el-button></template></el-table-column>
+        </el-table>
+        <div style="display: flex;align-items: center;margin-top: 15px;">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[5, 10, 20, 40,100]"
+            :page-size="pageSize"
+            :total="list.length"
+            style="margin-top: 15px;"
+            background
+            layout="sizes, prev, pager, next"/>
 
     </div>
+      </el-tab-pane>
+      <el-tab-pane label="座位安排">
+        <el-row :gutter="20">
+          <el-col :span="16">
+            <el-card class="box-card" style="">
+
+              <div slot="header"
+                   style="display: flex;align-items: center;justify-content: space-between;">
+                <span>游客选座</span>
+              </div>
+
+              <el-divider content-position="center">车头</el-divider>
+
+              <el-row :gutter="10" justify="space-around" style="flex-grow: 1" type="flex">
+                <el-col :key="col"
+                        :span="Math.floor(22/(groupInfo.carType.columnLeft+groupInfo.carType.columnRight))"
+                        v-for="col in groupInfo.carType.columnLeft">
+                  <div :id="row+''+col" :key="row" @dragover='allowDrop($event)' @drop="drop"
+                       class="seat-item"
+                       style="display: flex;flex-direction: row;justify-content: flex-start;align-items: center"
+                       v-for="row in groupInfo.carType.rowLeft">
+                    <el-tag type="info">#{{row}}{{col}}</el-tag>
+                  </div>
+                </el-col>
+                <el-col :span="2">
+                </el-col>
+                <el-col :key="groupInfo.carType.columnLeft+col"
+                        :span="Math.floor(22/(groupInfo.carType.columnLeft+groupInfo.carType.columnRight))"
+                        v-for="col in groupInfo.carType.columnRight">
+                  <div :id="row+''+(groupInfo.carType.columnLeft+col)" :key="row" @dragover='allowDrop($event)'
+                       @drop="drop"
+                       class="seat-item"
+                       style="display: flex;flex-direction: row;justify-content: flex-start;align-items: center"
+                       v-for="row in groupInfo.carType.rowLeft">
+                    <el-tag @drop.prevent style="margin-right: 5px;" type="info">
+                      #{{row}}{{groupInfo.carType.columnLeft+col}}
+                    </el-tag>
+                  </div>
+                </el-col>
+              </el-row>
+
+              <el-divider content-position="center">车尾</el-divider>
+
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card class="box-card">
+              <div slot="header"
+                   style="display: flex;align-items: center;justify-content: space-between;">
+                <span>未排座游客</span>
+                <el-button type="primary" @click="paiSeat(this.groupInfo.touList)">自动排座</el-button>
+              </div>
+              <div @dragover='allowDrop($event)' @drop="reseatInfo" style="min-height: 6vh">
+                <div :id="dis.disName" :key="dis.disName"
+                     :style="{'color':dis.color}"
+                     style="margin: 10px;display: flex;align-items: center;justify-content: flex-start;flex-wrap: wrap;"
+                     v-for="dis in disNameList">
+                  <!--<el-button type="text" style="margin-right: 15px;"  @click="$router.push({name:'orderList',params:{groupNum:groupInfo.groupNum,disName:dis.disName}})">{{dis.disName}} : </el-button>-->
+                  <span
+                    :draggable="true"
+                    :id="'t'+item.id"
+                    @dragstart='dragStart($event,item)'
+                    class="tou-item"
+                    v-for="item in groupInfo.touList.filter(item=>(item.disName===dis.disName))"
+                  >
+              <el-popover
+                :content="item.remark"
+                :title="item.phone"
+                placement="top-start"
+                trigger="click"
+                width="200">
+                <el-button :style="{'background-color':dis.color}" plain size="mini" slot="reference"
+                           style="font-size: 14px;color: white">{{item.name}}({{item.sex===1?'男':'女'}})</el-button>
+              </el-popover>
+            </span>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -131,14 +201,14 @@
     components: {MessView},
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 5,
         groupState:'',
         queryForm: {
           orderName:'',
           location:'',
-
-          pageNum: 1,
-          pageSorted: 'desc',
-          pageSize: 10
         },
         inGroupList:[],
         messTouList:[],
@@ -200,7 +270,7 @@
           disName: ''
         },
         groupInfo: {
-          groupId:'',
+          id:'',
           groupNum: '',
           groupName: '',
           touNum: '',
@@ -252,9 +322,9 @@
         })
         return arraytemp
       },
-      touListC() {
-        return this.groupInfo.touList.filter(item => (item.disName === this.touListQuery.disName || !this.touListQuery.disName))
-      }
+      // touListC() {
+      //   return this.groupInfo.touList.filter(item => (item.disName === this.touListQuery.disName || !this.touListQuery.disName))
+      // }
     },
 
     activated() {
@@ -267,22 +337,29 @@
     },
 
     methods: {
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       getList() {
         this.onLoading = true
         getWeChatNoPtOrders(this.queryForm).then(res => {
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
         })
       },
       init(){
-        this.groupState = this.$route.query.groupState
+        // this.groupState = this.$route.query.groupState
         let groupId = this.$route.query.id
 
         getGroupSOrderHasVarPlan(groupId).then(res => {
-          this.inGroupList = res
+          this.inGroupList = res.data
         }).catch(error => {
           console.log(error)
         })
@@ -291,11 +368,16 @@
       delOrder(item){
         let orderId = item.orderId
         orderOutGroup(orderId).then(res=>{
-          this.$message({type: 'success', message: "订单出团成功！"})
+          if(res.re===1){
+            this.$message({type: 'success', message: "订单出团成功！"})
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
           this.onSave=false
           // this.$router.back()
           this.init()
           this.getList()
+          this.getData()
         }).catch(error => {
 
           this.onSave=false
@@ -353,10 +435,9 @@
 
       reseatInfo(ev) {
         let id = ev.dataTransfer.getData("Text")
-
         setSeat(this.tourDrag.id, 0).then(res => {
           this.tourDrag.seatInfo = 0
-          document.getElementById(this.tourDrag.disName).appendChild(document.getElementById(id))
+          ev.target.appendChild(document.getElementById(id))
         }).catch(error => {
           this.$message({
             type: 'error',
@@ -366,12 +447,18 @@
       },
       drop(ev) {
         ev.preventDefault()
+        console.log(ev.target.className)
         let id = ev.dataTransfer.getData("Text")
+
         if (ev.target.className === 'seat-item') {
           //检查当前座位有没有人 遍历游客列表查看有无重复
           let seatId = ev.target.id
           let hasTour = false
+          let orderId = this.tourDrag.orderId
+
           this.groupInfo.touList.forEach(item => {
+            // console.log("111:"+this.tourDrag.id)
+            // console.log("222:"+ev.target.id)
             if (item.seatInfo === seatId)
               hasTour = true
           })
@@ -405,18 +492,23 @@
         ev.dataTransfer.setData("Text", ev.target.id)
         this.tourDrag = item
       },
-        onClose(){
-          this.getData();
-        },
+      onClose(){
+        this.getData();
+      },
       addOrder(item){
         let orderId = item.orderId
-        let groupId = this.groupInfo.groupId
+        let groupId = this.groupInfo.id
         orderInGroup(orderId,groupId).then(res=>{
-          this.$message({type: 'success', message: "订单入团成功！"})
+          if(res.re===1){
+            this.$message({type: 'success', message: "订单入团成功！"})
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
           this.onSave=false
           // this.$router.back()
           this.init()
           this.getList()
+          this.getData()
         }).catch(error => {
           this.onSave=false
         })
@@ -424,8 +516,15 @@
       getData() {
         let id = this.$route.query.id
         getGroupDetail(id).then(res => {
-          this.groupInfo = res
-          this.groupInfo.groupId = res.groupId
+          // this.groupInfo = res.data
+          this.groupInfo.groupNum = res.data.groupNum
+          this.groupInfo.groupName = res.data.groupName
+          this.groupInfo.travelDate = res.data.travelDate
+          this.groupInfo.guiderName = res.data.guiderName
+          this.groupInfo.carType.typeName = res.data.carType.typeName
+          this.groupInfo.carName = res.data.carName
+          this.groupInfo.groupId = res.data.id
+          this.groupState = res.data.groupState
           this.$nextTick(this.initSeatInfo)
 
         }).catch(error => {
@@ -455,7 +554,16 @@
             document.getElementById(item.seatInfo).appendChild(document.getElementById('t' + item.id))
           }
         })
-      }
+      },
+
+      paiSeat(touList) {
+
+        alert(touList)
+        alert(this.groupInfo.carType.columnRight)
+
+        alert(this.groupInfo.carType.rowLeft)
+        alert(this.groupInfo.carType.rowRight)
+      },
 
 
     }

@@ -95,15 +95,20 @@ export default {
     },
     getDisTypeList() {
       getSupType().then(res => {
-        this.disType = res
+        this.disType = res.data
       })
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           addSupInfo(this.Disform).then(res => {
-            this.$message({ type: 'success', message: '保存成功' })
-            this.$router.back()
+            if(res.re===1){
+              this.$message({ type: 'success', message: '保存成功' })
+              this.$router.back()
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
+
           }).catch(error => {})
         } else {
           return false

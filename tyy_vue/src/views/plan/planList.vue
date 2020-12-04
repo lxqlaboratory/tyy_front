@@ -269,9 +269,7 @@
                       <el-option :key="item.dataItemName" :label="item.dataItemName" :value="item.dataItemName"
                                  v-for="item in ticketTypeList"></el-option>
                     </el-select>
-                    <!--<el-input style="width: 75px;" v-model="item.name"></el-input>-->
                   </div>
-
                   <div>
                     <label>结算价<span class="tip">(同行价)</span></label>
                     <el-input style="width: 150px;" type="number" v-model="item.retPrice">
@@ -380,7 +378,7 @@
 
     <el-table
       style="margin-top: 15px;"
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       fit
       highlight-current-row
@@ -401,11 +399,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="出团时间" min-width="8">
-        <template slot-scope="scope">
-          {{scope.row.travelDate.substr(0,10)}}
-        </template>
-      </el-table-column>
+      <!--<el-table-column align="center" label="出团时间" min-width="8">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{scope.row.travelDate.substr(0,10)}}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
 
       <el-table-column align="center" label="计划人数" min-width="8">
         <template slot-scope="scope">
@@ -440,8 +438,8 @@
         <template slot-scope="scope">
           <el-button type="success" @click="toGroup(scope.row)">查看详情</el-button>
           <el-button type="primary" @click="addGro(scope.row)" >创建团队</el-button>
-          <el-button type="warning" @click="editPlan(scope.row)">编辑</el-button>
-          <el-button v-if ="$_has('PLANUPDATE')" type="danger" @click="delPlan(scope.row.id)">删除</el-button>
+          <el-button type="warning" @click="editP(scope.row)">编辑</el-button>
+          <el-button type="danger" @click="delPlan(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -449,13 +447,14 @@
     </el-table>
 
     <el-pagination
-      :current-page.sync="queryForm.pageNum"
-      :total="total"
-      :page-size="queryForm.pageSize"
-      @current-change="getList"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[5, 10, 20, 40,100]"
+      :page-size="pageSize"
+      :total="list.length"
       style="margin-top: 15px;"
       background
-      layout="prev, pager, next"/>
+      layout="sizes, prev, pager, next"/>
 
 
   </div>
@@ -480,6 +479,10 @@
     name: "planList",
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 10,
         onload_editPlan: false,
         v_editPlan: false,
         initData: {
@@ -557,10 +560,6 @@
           planDate: [],
           saleState: '',
 
-
-          pageNum: 1,
-          pageSorted: 'desc',
-          pageSize: 10
         }
       }
     },
@@ -589,6 +588,14 @@
     },
 
     methods: {
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       toGroup(item) {
         let id = item.id
         let proId = item.proId
@@ -602,9 +609,14 @@
         this.$router.push({name: 'planGroup', query: {id,groupDate}})
       },
       initPlanList() {
-        Promise.all([getLocations(), getDisType()]).then(res => {
-          this.locationList = res[0]
-          this.disTypeList = res[1]
+        getLocations().then(res => {
+          this.locationList = res.data
+        }).catch(error => {
+        })
+        getDisType().then(res => {
+          this.disTypeList = res.data
+        }).catch(error => {
+        })
           this.disTypeList.forEach(item => {
               this.$set(item, 'planCharge', [
                 {
@@ -617,24 +629,22 @@
             }
           )
 
-        })
-
        },
       initGroup(){
         getGuiderType().then(res => {
-          this.initData.guiderTypeList = res
+          this.initData.guiderTypeList = res.data
         }).catch(error => {
         })
         getGuiderList().then(res => {
-          this.initData.guiderList = res
+          this.initData.guiderList = res.data
         }).catch(error => {
         })
         getCarList().then(res => {
-          this.initData.carList = res
+          this.initData.carList = res.data
         }).catch((error => {
         }))
         getCarTypeList().then(res => {
-          this.initData.carTypeList = res
+          this.initData.carTypeList = res.data
         }).catch(error => {
         })
       },
@@ -672,14 +682,18 @@
           }
         }
         this.planEditForm.disListStr = JSON.stringify(this.planEditForm.disList)
+        console.log("this.planEditForm.disListStr:"+this.planEditForm.disListStr)
         this.planEditForm.defalutPlanChargeStr = JSON.stringify(this.planEditForm.defaultCharge)
+        console.log("this.planEditForm.defalutPlanChargeStr:"+this.planEditForm.defalutPlanChargeStr)
         this.planEditForm.ticketType=JSON.stringify(this.planEditForm.ticketType)
         // console.log(this.planEditForm)
         editPlan(this.planEditForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '保存计划成功'
-          })
+          if(res.re===1){
+            this.$message({type: 'success', message: '保存计划成功'})
+            this.getList()
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
 
           this.onload_editPlan = false
           this.v_editPlan = false
@@ -706,23 +720,24 @@
           })
         })
       },
-      editPlan(item) {
+      editP(item) {
         let proId = item.proId
         getProTicList(proId).then(res => {
-          this.ticketTypeList = res
+          this.ticketTypeList = res.data
         }).catch(error => {
         })
         getPlanInfo(item.id).then(res => {
           this.v_editPlan = true
-          this.planEditForm = res
+          this.planEditForm = res.data
           this.planEditForm.saleState = (this.planEditForm.saleState === 1)
-          this.planEditForm.proLocation = JSON.parse(res.proLocation)
-          this.planEditForm.disList = res.disList
-          this.planEditForm.proCharge = JSON.parse(res.proCharge)
-          this.planEditForm.ticketType = JSON.parse(res.ticketType)
-          console.log(this.planEditForm.ticketType+"---3-")
-          this.planEditForm.defaultCharge = JSON.parse(res.defaultCharge)
-          console.log(this.planEditForm.defaultCharge+"---4--")
+          this.planEditForm.proLocation = JSON.parse(res.data.proLocation)
+          this.planEditForm.disList = res.data.disList
+          this.planEditForm.proCharge = JSON.parse(res.data.proCharge)
+          this.planEditForm.ticketType = JSON.parse(res.data.ticketType)
+          // console.log(this.planEditForm.ticketType+"---3-")
+          this.planEditForm.defaultCharge = JSON.parse(res.data.defaultCharge)
+          // console.log(this.planEditForm.defaultCharge+"---4--")
+
           this.planEditForm.disList.forEach(item => {
 
             if (item.isSpecial === false) {
@@ -736,7 +751,7 @@
       },
       addLocationNew(location) {
         getLocations().then(res => {
-          this.locationList = res
+          this.locationList = res.data
           this.v_addLocation = false
         }).catch(error => {
         })
@@ -762,7 +777,7 @@
           this.isOnAdd = false
           this.v_addDisType = false
           getDisType().then(res => {
-            this.disTypeList = res
+            this.disTypeList = res.data
             this.disTypeList.forEach(item => {
               this.$set(item, 'planCharge', [
                 {
@@ -786,12 +801,8 @@
       getList() {
         this.onLoading = true
         getPlans(this.queryForm).then(res => {
-          console.log(res)
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
-
-
         }).catch(error => {
           this.onLoading = false
         })

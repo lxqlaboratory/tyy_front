@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
 
-      <el-button v-if="$_has('DISTYPEUPDATE')" @click="v_addDisType=true;disTypeAddForm={}" icon="el-icon-circle-plus-outline" type="primary">
+      <el-button @click="v_addDisType=true;disTypeAddForm={}" icon="el-icon-circle-plus-outline" type="primary">
         新增分销商类型
       </el-button>
 
@@ -140,10 +140,10 @@
             </el-table-column>
             <el-table-column align="center" label="操作" min-width="150">
               <template slot-scope="scope">
-                <el-button v-if="$_has('DISTYPEUPDATE')" @click="v_editDisType=true;disTypeEditForm=list.find(item=>(item.id===scope.row.id))" icon="el-icon-edit" size="small"
+                <el-button @click="v_editDisType=true;disTypeEditForm=list.find(item=>(item.id===scope.row.id))" icon="el-icon-edit" size="small"
                            type="primary">编辑
                 </el-button>
-                <el-button v-if="$_has('DISTYPEUPDATE')" @click="deleteDisType(scope.row.id)" icon="el-icon-delete" size="small" type="danger">删除
+                <el-button  @click="deleteDisType(scope.row.id)" icon="el-icon-delete" size="small" type="danger">删除
                 </el-button>
               </template>
             </el-table-column>
@@ -225,7 +225,7 @@
 
       getList: function () {
         getDisType().then(res => {
-          this.list = res
+          this.list = res.data
           this.typeList = distinct(this.list, 'type')
         }).catch(error => {
         })
@@ -233,10 +233,15 @@
       addNewDisType: function () {
         this.isOnAdd = true
         addDisType(this.disTypeAddForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
-          })
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           this.isOnAdd = false
           this.v_addDisType = false
           this.getList()
@@ -246,10 +251,15 @@
       },
       ediDisType: function () {
         editDisType(this.disTypeEditForm).then(res => {
-          this.$message({
-            type: 'success',
-            message: '保存成功'
-          })
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           this.v_editDisType = false
           this.getList()
         }).catch(error => {
@@ -260,11 +270,17 @@
       deleteDisType: function (id) {
         this.$confirm('此操作不可撤销，是否继续？', '提示', {confirmButtonText: '确定', cancelButtonText: '取消'}).then(() => {
           deleteType(id).then(res => {
+            if(res.re===1){
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+            }else{
+              this.$message({type: 'error', message: res.data})
+            }
+
             this.getList()
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            })
+
           }).catch(error => {
             this.getList()
           })

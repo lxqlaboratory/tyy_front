@@ -1,8 +1,68 @@
 <template>
   <div class="app-container">
+    <el-dialog v-dialog-drag  :visible.sync="v_addGroup" style="width: 100%;" title="创建团队">
+      <el-form :model="groupAddForm" label-width="80px" ref="addGroup">
+        <el-form-item
+          :rules=" [{ required: true, message: '请输入活动名称', trigger: 'blur' },  { min: 3, max:25, message: '长度在 3 到 25 个字符', trigger: 'blur' }]"
+          label="团队名"
+          prop="groupName">
+          <el-input placeholder="请输入团队名" v-model="groupAddForm.groupName"></el-input>
+        </el-form-item>
+
+        <el-form-item
+          :rules=" [{ required: true}]"
+          label="出团日期"
+          prop="groupDate">
+          <div style="display: flex;align-items: center;justify-content: flex-start;flex-wrap: wrap;margin-left: 0px;">
+            <el-date-picker placeholder="请选择出团日期" v-model="groupAddForm.groupDate"
+                            value="yyyy-MM-dd" type="date"
+                            value-format="yyyy-MM-dd"></el-date-picker>
+          </div>
+        </el-form-item>
+        <el-form-item label="选择导游" required>
+          <el-select :value="groupAddForm.guiderTypeId" @change="groupAddForm.guiderId=''" placeholder="筛选导游类型"
+                     v-model="groupAddForm.guiderTypeId">
+            <el-option :key="item.id" :label="item.guiderTypeName" :value="item.id"
+                       v-for="item in initData.guiderTypeList"></el-option>
+          </el-select>
+          <el-select :value="groupAddForm.guiderId" placeholder="选择导游" v-model="groupAddForm.guiderId">
+            <el-option :key="item.id"
+                       :label="item.guiderName" :value="item.id"
+                       v-for="item in initData.guiderList.filter(item=>(item.typeId===groupAddForm.guiderTypeId))"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="选择车辆" required>
+          <el-select :value="groupAddForm.carTypeId" @change="groupAddForm.carId=''" placeholder="筛选车型"
+                     v-model="groupAddForm.carTypeId">
+            <el-option :key="item.id" :label="item.typeName" :value="item.id"
+                       v-for="item in initData.carTypeList"></el-option>
+          </el-select>
+          <el-select :value="groupAddForm.carId" placeholder="选择车辆" v-model="groupAddForm.carId">
+            <el-option :key="item.id"
+                       :label="item.carName" :value="item.id"
+                       v-for="item in initData.carList.filter(item=>(item.carType===groupAddForm.carTypeId))"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="团队备注">
+          <el-input :rules=" [ { min: 0, max:500, message: '长度小于500字符', trigger: 'blur' }]" placeholder="简单记录团队情况"
+                    type="textarea"
+                    v-model="groupAddForm.groupDes"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"  @click="onSubmit">立即创建</el-button>
+          <el-button @click="v_addGroup = false" >取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-row align="middle" type="flex">
       <el-col :span="22">
         <el-row :gutter="5" style="margin-top: 15px;">
+          <el-col :span="4">
+            <label>所属计划编号</label>
+            <el-input v-model="queryForm.planNum"></el-input>
+          </el-col>
           <el-col :span="4">
             <label>订单编号</label>
             <el-input v-model="queryForm.orderName"></el-input>
@@ -15,41 +75,97 @@
             <el-button @click="getList" type="primary">
               查询
             </el-button>
+            <el-button  @click="toGro"  icon="el-icon-plus" type="primary">
+              创建团队
+            </el-button>
           </el-col>
         </el-row>
       </el-col>
       <el-col :span="2" style="display: flex;flex-direction: column;align-items: flex-start;justify-content: flex-end">
-          <el-popover
-            placement="left"
-            trigger="click"
-            width="800">
-            <div>
-              <el-checkbox v-model="listTitleFilter.orderNum"  @change="saveLocalStorge">订单号</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.location"  @change="saveLocalStorge">集合地点</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.groupState"  @change="saveLocalStorge">拼团状态</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.productName"  @change="saveLocalStorge">产品名称</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.disName"  @change="saveLocalStorge">分销商名称</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.travelDate" @change="saveLocalStorge">出团日期</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.touNum" @change="saveLocalStorge">游客数</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.creatTime" @change="saveLocalStorge">创建时间</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.shoudPay" @change="saveLocalStorge">应收款</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.hashPay" @change="saveLocalStorge">实收款</el-checkbox>
-              <el-checkbox v-model="listTitleFilter.arrPay" @change="saveLocalStorge">欠款</el-checkbox>
+        <el-popover
+          placement="left"
+          trigger="click"
+          width="800">
+          <div>
+            <el-checkbox v-model="listTitleFilter.orderNum"  @change="saveLocalStorge">订单号</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.location"  @change="saveLocalStorge">集合地点</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.groupState"  @change="saveLocalStorge">拼团状态</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.productName"  @change="saveLocalStorge">产品名称</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.disName"  @change="saveLocalStorge">分销商名称</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.travelDate" @change="saveLocalStorge">出团日期</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.touNum" @change="saveLocalStorge">游客数</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.creatTime" @change="saveLocalStorge">创建时间</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.shoudPay" @change="saveLocalStorge">应收款</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.hashPay" @change="saveLocalStorge">实收款</el-checkbox>
+            <el-checkbox v-model="listTitleFilter.arrPay" @change="saveLocalStorge">欠款</el-checkbox>
+            <!--<el-checkbox v-model="listTitleFilter.loss" @change="saveLocalStorge">损耗</el-checkbox>-->
+            <!--<el-checkbox v-model="listTitleFilter.adminUser" @change="saveLocalStorge">录入人员</el-checkbox>-->
+            <!--<el-checkbox v-model="listTitleFilter.state" @change="saveLocalStorge">订单状态</el-checkbox>-->
 
-            </div>
-            <el-button slot="reference">列筛选</el-button>
-          </el-popover>
+          </div>
+          <el-button slot="reference">列筛选</el-button>
+        </el-popover>
       </el-col>
     </el-row>
 
     <el-divider></el-divider>
 
-    <!--<el-dialog :close-on-click-modal="false" :visible.sync="v_addTou" title="录入游客" v-dialog-drag width="80vw">-->
-      <!--<order-toulist :orderid="id_addTou" :tou-max="tou_max"></order-toulist>-->
-    <!--</el-dialog>-->
+    <el-dialog :close-on-click-modal="false" :visible.sync="v_addTou" title="游客信息" v-dialog-drag width="80vw">
+      <el-table :data="tourList" border
+                ref="mtable"
+                stripe>
+        <el-table-column type="selection"></el-table-column>
+
+        <el-table-column align="center" label="游客类型">
+          <template slot-scope="scope">
+            <el-tag type="primary" v-if="scope.row.identity===1">成人</el-tag>
+            <el-tag type="warning" v-if="scope.row.identity===2">儿童</el-tag>
+            <el-tag type="success" v-if="scope.row.identity===3">老人</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="游客姓名">
+          <template slot-scope="scope">{{scope.row.name}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="游客性别">
+          <template slot-scope="scope">
+            <el-tag type="success" v-if="scope.row.sex===1">男</el-tag>
+            <el-tag type="warning" v-if="scope.row.sex===0">女</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="游客年龄">
+          <template slot-scope="scope">{{scope.row.age}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="证件类型">
+
+          <template slot-scope="scope">{{scope.row.cerType}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="证件号码">
+          <template slot-scope="scope">{{scope.row.cerNum}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="联系电话">
+          <template slot-scope="scope">{{scope.row.phone}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="备注">
+          <template slot-scope="scope">{{scope.row.remark}}</template>
+        </el-table-column>
+        <!--<el-table-column align="center" label="操作" width="350px">-->
+        <!--<template slot-scope="scope">-->
+        <!--<div>-->
+        <!--<el-button @click="editTou(scope.row)" type="primary">编辑</el-button>-->
+        <!--<el-button @click="delTou(scope.row.id)" type="danger">删除</el-button>-->
+        <!--<el-button @click="editIsBlack(scope.row.id,1)" type="warning" v-if="scope.row.isBlack===0">拉黑</el-button>-->
+        <!--<el-button @click="editIsBlack(scope.row.id,0)" type="success" v-if="scope.row.isBlack===1">恢复</el-button>-->
+        <!--</div>-->
+
+        <!--</template>-->
+        <!--</el-table-column>-->
+
+      </el-table>
+
+    </el-dialog>
 
     <el-table
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       highlight-current-row
       ref="mtable"
@@ -99,7 +215,7 @@
 
       <el-table-column v-if="listTitleFilter.travelDate" align="center" label="出团日期" width="150">
         <template slot-scope="scope">
-          {{ scope.row.travelDate.substr(0,10) }}
+          {{ scope.row.travelDate }}
         </template>
       </el-table-column>
 
@@ -111,7 +227,7 @@
 
       <el-table-column v-if="listTitleFilter.touNum" align="center" label="游客数" width="250">
         <template slot-scope="scope">
-          <el-button @click="openAddTou(scope.row.id,scope.row.touNum)" size="mini"> {{ scope.row.tourNum}}人</el-button>
+          <el-button @click="openAddTou(scope.row.orderId)" size="mini"> {{ scope.row.tourNum}}人</el-button>
           <order-tou-contract :order-id="scope.row.id"></order-tou-contract>
         </template>
       </el-table-column>
@@ -143,8 +259,11 @@
 
       <el-table-column align="center" fixed="right" label="操作" min-width="300">
         <template slot-scope="scope">
-          <!--<wc-order-info :order-state="scope.row.state" :orderId="scope.row.id" @refresh="getList"></wc-order-info>-->
-          <el-button @click="printOrder(scope.row)" icon="el-icon-printer" size="mini">打印</el-button>
+          <wc-order-info :order-state="scope.row.state" :orderId="scope.row.orderId" @refresh="getList"></wc-order-info>
+          <!--<el-button v-if ="$_has('ORDERUPDATE')" :type="orderState===1?'primary':'primary'"-->
+          <!--@click="getData(scope.row.id)" icon="el-icon-edit" size="mini">处理</el-button>-->
+          <!--<el-button @click="printOrder(scope.row)" icon="el-icon-printer" size="mini">打印</el-button>-->
+          <!--<el-button @click="delOrder(scope.row.orderId)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>-->
         </template>
       </el-table-column>
 
@@ -153,25 +272,16 @@
     <div style="display: flex;align-items: center;margin-top: 15px;">
 
       <el-pagination
-        :current-page.sync="queryForm.pageNum"
-        :page-size="queryForm.pageSize"
-        :total="total"
-        @current-change="getList"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[5, 10, 20, 40,100]"
+        :page-size="pageSize"
+        :total="list.length"
+        style="margin-top: 15px;"
         background
-        layout="prev, pager, next"
-      />
-      <div>
-        <el-select :value="queryForm.pageSize" @change="getList" style="margin-left:  5px;"
-                   v-model="queryForm.pageSize">
-          <el-option :value="10" label="10条/页"></el-option>
-          <el-option :value="20" label="20条/页"></el-option>
-          <el-option :value="30" label="30条/页"></el-option>
-          <el-option :value="40" label="40条/页"></el-option>
-          <el-option :value="50" label="50条/页"></el-option>
-          <el-option :value="100" label="100条/页"></el-option>
-          <el-option :value="500" label="500条/页"></el-option>
-        </el-select>
+        layout="sizes, prev, pager, next"/>
 
+      <div>
         <el-button @click="export2Excel('xlsx')" icon="el-icon-document" style="margin-left: 15px" type="primary">
           导出选中条目(Excel)
         </el-button>
@@ -179,7 +289,6 @@
         <el-button @click="export2Excel('csv')" icon="el-icon-document" style="margin-left: 15px" type="success">
           导出选中条目(Csv)
         </el-button>
-
       </div>
 
     </div>
@@ -191,20 +300,44 @@
 <script>
   import {getProTye, getSerTypes} from "@/api/production"
   import {getDisType} from "@/api/distribute"
-  import {getArrWeChatOrders} from "@/api/order"
+  import {getNewTouList,getArrWeChatOrders,deleteOrder} from "@/api/order"
   import wcOrderInfo from "@/views/order/wcOrderInfo"
-
+  import {addGro} from "@/api/group"
   import OrderToulist from "@/views/order/orderToulist"
   import priceShow from '@/views/com/priceShow'
   import priceInput from '@/views/com/priceInput'
   import {parseTime} from "@/utils/index"
   import OrderTouContract from "@/views/order/orderTouContract"
-
+  import {getCarList, getCarTypeList} from "@/api/tourist";
+  import {getGuiderList, getGuiderType} from '@/api/guide';
 
   export default {
     name: "wechatArrorderList",
     data() {
       return {
+        // 当前页
+        currentPage: 1,
+        // 每页多少条
+        pageSize: 10,
+        initData: {
+          guiderTypeList: [],
+          guiderList: [],
+          carTypeList: [],
+          carList: []
+        },
+        groupAddForm: {
+          guiderTypeId: '',
+          guiderId: '',
+          carTypeId: '',
+          carId: '',
+          groupDes: '',
+          groupName: '',
+          groupDate: '',
+          orderList:[],
+          serType: this.$route.query.serType,
+          planId: ''
+        },
+        v_addGroup:false,
         listTitleFilter:{
           orderNum:true,
           location:true,
@@ -212,8 +345,11 @@
           travelDate:true,
           touNum:true,
           creatTime:true,
-          // disName:true,
-          // payCharge:true,
+          disName:true,
+          productName:true,
+          hashPay:true,
+          shoudPay:true,
+          arrPay:true,
           // paid:true,
           // arrears:true,
           // loss:true,
@@ -229,6 +365,7 @@
         isWsh: false,
         total: 0,
         list: [],
+        tourList:[],
         onLoading: false,
         TravelRangeOptions: {
           shortcuts: [{
@@ -370,6 +507,10 @@
         this.queryForm.disName = this.$route.params.disName
       }
 
+      if (this.$route.params.productName) {
+        this.queryForm.productName = this.$route.params.productName
+      }
+
       this.initQueryList()
       this.getList()
 
@@ -390,7 +531,49 @@
       }
     },
     methods: {
+      // 每页多少条
+      handleSizeChange(val) {
+        this.pageSize = val;
+      },
+      // 当前页
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
+      toGro() {
+        this.v_addGroup = true
+      },
+      onSubmit(){
+        // this.inGroupList.forEach(item=>{
+        //   this.groupAddForm.orderList.push(item.id);
+        // });
+        addGro(this.groupAddForm).then(res=>{
+          this.$message({type: 'success', message: "创建团队成功！"})
+          this.onCreate=false
+          this.v_addGroup = false
+          // this.$router.back()
+          this.$router.push({name: 'groupNew'})
+        }).catch(error => {
 
+          this.onCreate=false
+        })
+
+      },
+      delOrder(id) {
+        this.$confirm('该订单将移入回收站，是否继续', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          deleteOrder(id).then(res => {
+            this.$message({
+              type: 'success',
+              message: '订单删除成功！'
+            })
+            this.getList()
+          }).catch(error => {
+          })
+
+        })
+      },
       printOrder(item) {
         // window.open(process.env.VUE_APP_PRINT_URL + 'order?orderId=' + this.orderId)
         this.orderId = item.orderId
@@ -452,9 +635,15 @@
       },
 
 
-      openAddTou(id, tou_max) {
-        this.id_addTou = id
-        this.tou_max = tou_max
+      openAddTou(id) {
+        getNewTouList(id).then(res => {
+          this.tourList = res.data
+          this.total = res.pagination.total
+          this.onLoading = false
+        }).catch(error => {
+          this.onLoading = false
+        })
+
         this.v_addTou = true
       },
       toGroup(groupNum, proSerType) {
@@ -479,9 +668,7 @@
       getList() {
         this.onLoading = true
         getArrWeChatOrders(this.queryForm).then(res => {
-          console.log(res.list)
-          this.list = res.list
-          this.total = res.pagination.total
+          this.list = res.data
           this.onLoading = false
         }).catch(error => {
           this.onLoading = false
@@ -490,17 +677,34 @@
 
       initQueryList() {
         getProTye().then(res => {
-          this.initList.proTypeList = res
+          this.initList.proTypeList = res.data
         }).catch(error => {
         })
         getSerTypes().then(res => {
-          this.initList.serTypeList = res
+          this.initList.serTypeList = res.data
         }).catch(error => {
         })
         getDisType().then(res => {
-          this.initList.disTypeList = res
+          this.initList.disTypeList = res.data
         }).catch(error => {
         })
+        getGuiderType().then(res => {
+          this.initData.guiderTypeList = res.data
+        }).catch(error => {
+        })
+        getGuiderList().then(res => {
+          this.initData.guiderList = res.data
+        }).catch(error => {
+        })
+        getCarList().then(res => {
+          this.initData.carList = res.data
+        }).catch((error => {
+        }))
+        getCarTypeList().then(res => {
+          this.initData.carTypeList = res.data
+        }).catch(error => {
+        })
+        this.onLoading = true
       }
     },
     props: {

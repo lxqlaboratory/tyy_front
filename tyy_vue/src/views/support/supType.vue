@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="component-item" style="margin-bottom: 5px;">
-      <el-button v-if="$_has('SUPTYPEUPDATE')" type="primary" icon="el-icon-circle-plus-outline" @click="v_addDisType=true;disTypeAddForm={};">
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="v_addDisType=true;disTypeAddForm={};">
         新增供应商类型
       </el-button>
     </div>
@@ -74,8 +74,8 @@
       </el-table-column>
       <el-table-column min-width="150" align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="$_has('SUPTYPEUPDATE')" type="primary" size="small" icon="el-icon-edit" @click="v_editDisType=true;disTypeEditForm=list.find(item=>(item.id===scope.row.id))">编辑</el-button>
-          <el-button v-if="$_has('SUPTYPEUPDATE')" type="danger" size="small" icon="el-icon-delete" @click="deleteSupType(scope.row.id)">删除
+          <el-button  type="primary" size="small" icon="el-icon-edit" @click="v_editDisType=true;disTypeEditForm=list.find(item=>(item.id===scope.row.id))">编辑</el-button>
+          <el-button  type="danger" size="small" icon="el-icon-delete" @click="deleteSupType(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -113,7 +113,7 @@ export default {
   methods: {
     getList: function() {
       getSupType().then(res => {
-        this.list = res
+        this.list = res.data
       }).catch(error => {
 
       })

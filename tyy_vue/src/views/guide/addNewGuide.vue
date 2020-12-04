@@ -107,7 +107,7 @@
             },
             getGuiderTypeList() {
                 getGuiderType().then(res => {
-                    this.guiderTypeList = res
+                    this.guiderTypeList = res.data
                 })
             },
             submitForm(formName) {
@@ -115,9 +115,13 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         addGuider(this.guiderform).then(res => {
+                          if(res.re===1){
                             this.$message({type: 'success', message: '新增导游成功'})
-                            this.onSave=false
                             this.$router.back()
+                          }else{
+                            this.$message({type: 'error', message: res.data})
+                          }
+                            this.onSave=false
                         }).catch(error => {
                             this.onSave=false
                         })

@@ -167,13 +167,12 @@
 
 
     <el-table
-      :data="list"
+      :data="list.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       fit
       highlight-current-row
       stripe
       style="margin-top: 15px;"
-      v-loading="onLoading"
     >
 
       <el-table-column align="center" label="团队编号" min-width="10">
@@ -186,11 +185,11 @@
           {{ scope.row.groupName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="出团日期" min-width="10">
-        <template slot-scope="scope">
-          {{ scope.row.travelDate.substr(0,10) }}
-        </template>
-      </el-table-column>
+      <!--<el-table-column align="center" label="出团日期" min-width="10">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.travelDate }}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column align="center" label="导游名" min-width="5">
         <template slot-scope="scope">
           {{ scope.row.guiderName }}
@@ -198,7 +197,7 @@
       </el-table-column>
       <el-table-column align="center" label="订单数" min-width="5">
         <template slot-scope="scope">
-          {{ scope.row.orderCount }}
+          {{ scope.row.orderNum }}
         </template>
       </el-table-column>
 
@@ -210,7 +209,7 @@
 
       <el-table-column align="center" label="车型" min-width="5">
         <template slot-scope="scope">
-          {{ scope.row.carType }}
+          {{ scope.row.carTypeName }}
         </template>
       </el-table-column>
 
@@ -225,8 +224,8 @@
       <el-table-column align="center" label="操作" min-width="30">
         <template slot-scope="scope">
           <el-button @click="toGroup(scope.row.planId,scope.row.id,scope.row.groupState)" type="primary">团队订单</el-button>
-          <el-button @click="cancelGroup(scope.row)" type="info" v-if="scope.row.groupState===1 && $_has('GROUPUPDATE')">取消确认</el-button>
-          <el-button @click="confirmGroup(scope.row)" type="success" v-if="scope.row.groupState===0 && $_has('GROUPUPDATE')">确认团队</el-button>
+          <el-button @click="cancelGroup(scope.row)" type="info" v-if="scope.row.groupState===1">取消确认</el-button>
+          <el-button @click="confirmGroup(scope.row)" type="success" v-if="scope.row.groupState===0 ">确认团队</el-button>
           <el-button @click="printGroup(scope.row.id)" type="success" v-if="scope.row.groupState===1">打印团队单</el-button>
           <el-button type="warning" @click="toEdit(scope.row.id)" >编辑团队</el-button>
           <!--<el-button v-show="false" @click="editGroup(scope.row.id)" type="warning" v-if="scope.row.state===0 && $_has('GROUPUPDATE')">编辑</el-button>-->
@@ -237,13 +236,14 @@
     </el-table>
 
     <el-pagination
-      :current-page.sync="queryForm.pageNum"
-      :page-size="queryForm.pageSize"
-      :total="total"
-      @current-change="getData"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :page-sizes="[5, 10, 20, 40,100]"
+      :page-size="pageSize"
+      :total="list.length"
+      style="margin-top: 15px;"
       background
-      layout="prev, pager, next"
-      style="margin-top: 15px;"/>
+      layout="sizes, prev, pager, next"/>
 
   </div>
 </template>
@@ -259,6 +259,10 @@
         name: "groupNewList",
         data() {
             return {
+              // 当前页
+              currentPage: 1,
+              // 每页多少条
+              pageSize: 10,
               groupAddForm: {
                 guiderTypeId: '',
                 guiderId: '',
@@ -336,10 +340,22 @@
           if (this.$route.name === 'group'){
               this.queryForm.serType = 1;
           }
+          if(this.$route.params.groupName){
+            this.queryForm.groupName=this.$route.params.groupName;
+          }
+
             this.getData();
             this.init();
         },
         methods: {
+          // 每页多少条
+          handleSizeChange(val) {
+            this.pageSize = val;
+          },
+          // 当前页
+          handleCurrentChange(val) {
+            this.currentPage = val;
+          },
           onSubmit(){
             // this.inGroupList.forEach(item=>{
             //   this.groupAddForm.orderList.push(item.id);
@@ -380,7 +396,9 @@
           toEdit(id) {
             getGroupInfoHasPlanId(id).then(res => {
               this.v_editGroup = true
-              this.groupEditForm = res
+              this.groupEditForm = res.data
+              this.groupEditForm.groupName = res.data.groupName
+              console.log("111"+this.groupEditForm.groupName)
             }).catch(error => {
             })
           },
@@ -439,22 +457,21 @@
             },
             init() {
                 getGuiderType().then(res => {
-                    this.initData.guiderTypeList = res
+                    this.initData.guiderTypeList = res.data
                 }).catch(error => {
                 })
                 getGuiderList().then(res => {
-                    this.initData.guiderList = res
+                    this.initData.guiderList = res.data
                 }).catch(error => {
                 })
                 getCarList().then(res => {
-                    this.initData.carList = res
+                    this.initData.carList = res.data
                 }).catch((error => {
                 }))
                 getCarTypeList().then(res => {
-                    this.initData.carTypeList = res
+                    this.initData.carTypeList = res.data
                 }).catch(error => {
                 })
-                this.onLoading = true
                 // getAllGroups().then(res => {
                 //   console.log(res)
                 //   this.onLoading = false
@@ -498,8 +515,7 @@
               this.onLoading = true
               getFilterGroups(this.queryForm).then(res => {
                 console.log(res)
-                this.list = res.list
-                this.total = res.pagination.total
+                this.list = res.data
                 this.onLoading = false
               }).catch(error => {
                 this.onLoading = false

@@ -49,11 +49,11 @@ export const constantRoutes = [
         meta: {title: '产品分类设置', icon: 'peoples',auth:'PROTYPEINFO'}
       },
       {
-        typeUser:'0',
+
         path: 'proPoint',
         name: 'ProPoint',
         component: () => import('@/views/production/proPoint'),
-        meta: {title: '集合地点设置', icon: 'peoples',auth:'LOCATIONINFO'},
+        meta: {title: '集合地点设置', icon: 'peoples'},
       },
       {
         typeUser:'0',
@@ -505,11 +505,19 @@ export const constantRoutes = [
         meta: {title: '增加分销商'},
         hidden: true
       },
+      // {
+      //   typeUser:'0',
+      //   path: 'disList',
+      //   name: 'DisList',
+      //   component: () => import('@/views/distribute/disList'),
+      //   meta: {title: '分销商列表', icon: 'table', affix: true,auth : 'DISINFO'}
+      // },
+
       {
         typeUser:'0',
-        path: 'disList',
-        name: 'DisList',
-        component: () => import('@/views/distribute/disList'),
+        path: 'disNewList',
+        name: 'DisNewList',
+        component: () => import('@/views/distribute/disNewList'),
         meta: {title: '分销商列表', icon: 'table', affix: true,auth : 'DISINFO'}
       }
     ]
@@ -686,13 +694,13 @@ export const constantRoutes = [
         component: () => import('@/views/tourist/touristList'),
         meta: {title: '游客列表', icon: 'table',auth : 'TOUINFO'}
       },
-      {
-        typeUser:'0',
-        path: 'blackTouristList',
-        name: 'BlackTouristList',
-        component: () => import('@/views/tourist/blackTouristList'),
-        meta: {title: '游客黑名单', icon: 'table',auth : 'TOUINFO'}
-      },
+      // {
+      //   typeUser:'0',
+      //   path: 'blackTouristList',
+      //   name: 'BlackTouristList',
+      //   component: () => import('@/views/tourist/blackTouristList'),
+      //   meta: {title: '游客黑名单', icon: 'table',auth : 'TOUINFO'}
+      // },
       {
         typeUser:'0',
         path: 'addNewTourist',

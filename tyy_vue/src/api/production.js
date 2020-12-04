@@ -379,6 +379,13 @@ export function setVisitRecord(id,visitRecord) {
     data:{id,visitRecord}
   })
 
-}
 
+}
+export function exportTravel(id) {
+  return request({
+    url:'/api/product/exportTravel',
+    method:'post',
+    data:{id}
+  })
+}
 
