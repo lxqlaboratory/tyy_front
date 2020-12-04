@@ -173,10 +173,15 @@
       },
       eidtIsBlack(id, isBlack) {
         editIsBlack(id, isBlack).then(res => {
-          this.$message({
-            type: 'success',
-            message: '处理成功！'
-          })
+          if(res.re===1){
+            this.$message({
+              type: 'success',
+              message: '处理成功！'
+            })
+          }else{
+            this.$message({type: 'error', message: res.data})
+          }
+
           this.getList()
         })
 
