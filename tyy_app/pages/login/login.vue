@@ -22,7 +22,7 @@
 			</form>
 		</view>
 		<!-- <button class="confirm-btn" open-type="getUserInfo" @getuserinfo="getUserInfomation" >666</button> -->
-		<button class="confirm-btn" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber" >没有账号？微信登录
+		<button class="confirm-btn" open-type="getPhoneNumber" @getphonenumber="onGetPhoneNumber">没有账号？微信登录
 		</button>
 		<!-- <view class="register-section">
 			没有账号?
@@ -32,8 +32,15 @@
 </template>
 
 <script>
-	import {sign} from "../../api/base/baseApi.js"
-	import {login} from "../../api/base/baseApi.js"
+	import {
+		sign
+	} from "../../api/base/baseApi.js"
+	import {
+		login
+	} from "../../api/base/baseApi.js"
+	import {
+		wxLoign
+	} from "../../api/base/baseApi.js"
 	export default {
 		data() {
 			return {
@@ -43,70 +50,98 @@
 			}
 		},
 		methods: {
-			
+
 			onGetPhoneNumber(e) {
-			            
-			              wxLoign({encryptedData:e.detail.encryptedData,iv:e.detail.iv}).then(res=>{
-							  uni.switchTab({
-							  	url:"../index/index"
-							  })
-							  })
-			            }  ,
-			zhuce(){
+				wx.login({
+					success(res) {
+						var date = new Date()
+						date.setMinutes(date.getMinutes() + 8);
+						getApp().globalData.dateTime = date;
+						wxLoign({
+							encryptedData: e.detail.encryptedData,
+							iv: e.detail.iv,
+							code: res.code
+						}).then(res2 => {
+							
+							wx.login({
+								success(res) {
+							login({
+								loginName: res2.data,
+								password: '1',
+								code: res.code
+							}).then(res3 => {
+								getApp().globalData.vueSessionId = res3.sessionId
+								if (res3.reCode === '0') {
+									uni.switchTab({
+										url: "../index/index"
+									})
+								}
+							})
+                           }
+						   })
+						})
+					}
+				})
+			},
+			zhuce() {
 				uni.navigateTo({
-					url:'../tour/tourSign'
+					url: '../tour/tourSign'
 				})
 			},
 			passwordF_B() {
 				this.hideEyes = !this.hideEyes;
 			},
-			getUserInfomation: function (e) {
+			getUserInfomation: function(e) {
 				console.log(e);
 			},
 			formSubmit(e) {
-					var that = this;
+				var that = this;
 				wx.login({
-				  success (res) {
-			
-				login({loginName: that.loginName,password:that.password,code:res.code}).then(res2=>{
-				  getApp().globalData.vueSessionId = res2.sessionId
-				  console.log(getApp().globalData.vueSessionId)
-				  if(res2.reCode === '0'){
-					  var date = new Date()
-					  date.setMinutes (date.getMinutes ()+8);
-					  getApp().globalData.dateTime = date;
-						uni.showModal({
-						    title: '提示',
-							showCancel: false,
-							confirmColor: "#000000",
-						    content: '绑定成功',
-						    success: function (res) {
-						        if (res.confirm) {
-							   uni.switchTab({
-							   	url:"../index/index"
-							   })
-						        } 
-						    }
-						});
-					}else {
-						uni.showModal({
-						    title: '提示',
-							showCancel: false,
-							confirmColor: "#000000",
-						    content: '用户信息错误',
-						    success: function (res) {
-						        if (res.confirm) {
-							       
-						        } 
-						    }
-						});
+					success(res) {
+
+						login({
+							loginName: that.loginName,
+							password: that.password,
+							code: res.code
+						}).then(res2 => {
+							getApp().globalData.vueSessionId = res2.sessionId
+							console.log(getApp().globalData.vueSessionId)
+							if (res2.reCode === '0') {
+								var date = new Date()
+								date.setMinutes(date.getMinutes() + 8);
+								getApp().globalData.dateTime = date;
+								uni.showModal({
+									title: '提示',
+									showCancel: false,
+									confirmColor: "#000000",
+									content: '绑定成功',
+									success: function(res) {
+										if (res.confirm) {
+											uni.switchTab({
+												url: "../index/index"
+											})
+										}
+									}
+								});
+							} else {
+								uni.showModal({
+									title: '提示',
+									showCancel: false,
+									confirmColor: "#000000",
+									content: '用户信息错误',
+									success: function(res) {
+										if (res.confirm) {
+
+										}
+									}
+								});
+							}
+
+						}).catch(error => {
+
+						})
 					}
-					
-				}).catch(error=>{
-					
-				}) 
-				}
-				 })
+				})
 			}
 		}
 	}
@@ -130,9 +165,11 @@
 		margin: 20px 0;
 		padding: 0 10px;
 	}
-.dddd{
-	display: none;
-}
+
+	.dddd {
+		display: none;
+	}
+
 	.login-img {
 		display: flex;
 		justify-content: center;
@@ -207,20 +244,23 @@
 	.owl-login.password .arms .arm.arm-r {
 		transform: translateY(-40px) translateX(-40px) scaleX(-1);
 	}
-	.register-section{
-		position:absolute;
+
+	.register-section {
+		position: absolute;
 		left: 0;
 		bottom: 50upx;
 		width: 100%;
 		font-size: $font-sm+2upx;
 		color: $font-color-base;
 		text-align: center;
-		text{
+
+		text {
 			color: $font-color-spec;
 			margin-left: 10upx;
 		}
 	}
-	.confirm-btn{
+
+	.confirm-btn {
 		width: 630upx;
 		height: 76upx;
 		line-height: 76upx;
@@ -229,7 +269,8 @@
 		background: $uni-color-primary;
 		color: #fff;
 		font-size: $font-lg;
-		&:after{
+
+		&:after {
 			border-radius: 100px;
 		}
 	}

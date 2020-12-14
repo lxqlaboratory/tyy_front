@@ -34,7 +34,7 @@
 				<view class="bottomLine"/>
 		</view>
 		<one-input v-model="realC" @finish="finishedOne" v-if="yanzheng"></one-input>
-		<button type="primary" class="buu" @click="submit1">提交</button>
+		<button type="primary" class="buu"  @click="submit1">提交</button>
 		
 		<text class="mix-btn" @click="cancel">解除绑定</text>
 	</view>
@@ -42,6 +42,7 @@
 
 <script>
 	import {SignOut} from "../../api/base/baseApi.js"
+	import {CCCCCCCCCCCCCCCCC} from "../../api/base/baseApi.js"
 	import {baseInfoInit} from "../../api/base/baseApi.js"
 	import {sendCodePhone} from "../../api/base/baseApi.js"
 	import {changePersonBase} from "../../api/base/baseApi.js"
@@ -89,10 +90,13 @@
 				}
 				
 			 },
-			 
+			 aaa(){
+				 CCCCCCCCCCCCCCCCC().then(res=>{
+					 })
+			 },
 			 cancel(){
 			 	SignOut({}).then(res=>{
-			 		if(res.status === 1){
+			 		if(res.re === 1){
 			 			uni.showModal({
 			 			    title: '提示',
 			 				showCancel: false,
@@ -100,13 +104,15 @@
 			 			    content: '解除绑定成功',
 			 			    success: function (res) {
 			 			        if (res.confirm) {
-			 				       uni.switchTab({  
-			 						   url:'../index/index'
+			 				       uni.navigateTo({
+			 				       	
+			 				        
+			 						   url:'../login/loginIndex'
 			 					   })
 			 			        } 
 			 			    }
 			 			});
-			 		}else if(res.status === 0){
+			 		}else if(res.re === -1){
 			 			uni.showModal({
 			 			    title: '提示',
 			 				showCancel: false,

@@ -76,12 +76,12 @@
 						backgroundColor: '#F37B1D',
 					}
 				},
-				{
-					text: "订单",
-					style: {
-						backgroundColor: 'orange',
-					}
-				},
+				// {
+				// 	text: "订单",
+				// 	style: {
+				// 		backgroundColor: 'orange',
+				// 	}
+				// },
 				{
 					text: "团队",
 					style: {
@@ -117,7 +117,7 @@
 				saleState: "",
 			}).then(res => {
 				console.log(res)
-				this.list = res.data.content;
+				this.list = res.data;
 				this.total=res.data.totalElements
 				this.numberOfElements=res.data.numberOfElements
 				uni.hideLoading();
@@ -238,12 +238,12 @@
 						}
 					});
 				}
-				else {
-					uni.navigateTo({
-						url: './productPlan?productId=' + productId
-					
-					});
-				}
+				// else {
+				// 	uni.navigateTo({
+				// 		url: './productPlan?productId=' + productId
+				// 	
+				// 	});
+				// }
 			
 			
 			},

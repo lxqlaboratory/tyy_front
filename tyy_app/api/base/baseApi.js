@@ -14,11 +14,18 @@ export function testDri(){
 		data:{'str':'test'}
 	})
 }
-
+export function CCCCCCCCCCCCCCCCC() {
+	return request.request({
+		url: '/CCCCCCCCCCCCCCCCC',
+		method: 'POST',
+		    data: {}
+	})
+}
 
 export function wxLoign(data){
-	return request({
-		url:'/appdri/wxLoign',
+	return request.request({
+		url:'/app/wxLoign',
+		method: 'POST',
 		data
 	})
 }
@@ -47,7 +54,8 @@ export function signyk(data){
 
 export function SignOut(data){
 	return request.request({
-		url:'/appdri/SignOut',
+		url:'/auth/unbounding',
+			method: 'POST',
 		data
 	})
 }
@@ -55,6 +63,7 @@ export function SignOut(data){
 export function getToken() {
   return request.request({
     url: '/getToken',
+	method: 'POST',
     data: {}
   })
 }

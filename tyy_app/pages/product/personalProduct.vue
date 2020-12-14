@@ -16,22 +16,7 @@
 						<text>产品类别</text>
 						<text>{{item.proType}}</text>
 					</view>
-					<view class="detail-row">
-						<text>最低收客人数</text>
-						<text>{{item.minTouNum}}人</text>
-					</view>
-					<view class="detail-row">
-						<text>行程天数</text>
-						<text>{{item.proDateNum}}天</text>
-					</view>
-					<view class="detail-row">
-						<text>订单数量</text>
-						<text>{{item.orderNum}}个</text>
-					</view>
-					<view class="detail-row">
-						<text>累计收客</text>
-						<text>{{item.touristNum}}人</text>
-					</view>
+					
 					<!-- <view class="detail-row" style="margin-top: 10px;justify-content: space-between;width:100%">
 						<view class="opertion-button" style="background-color: #39B54A;" @click="editProduct(item.id)"><text>产品编辑</text></view>
 						<view class="opertion-button" style="background-color: #00aaff;" @click="copyProduct(item.id)"><text>产品复制</text></view>
@@ -88,7 +73,6 @@
 			getPersonalProduct({
 				serType: 1
 			}).then(res => {
-				console.log(res)
 				this.list = res.data;
 			});
 		},
